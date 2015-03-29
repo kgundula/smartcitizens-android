@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">Smart Citizen</string>
+    <string name="welcome_text">Welcome : </string>
+    <string name="my_property_header">My Properties</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_capture">Capture</string>
+    <string name="action_view_reading">View Reading</string>
+    <string name="action_notifications">Notifications</string>
+
+    <string name="property_name">Property Name</string>
+    <string name="property_address">Property Address</string>
+
+    <string name="title_activity_capture_reading">Capture Reading</string>
+    <string name="title_activity_view_reading">View Reading</string>
+    <string name="title_activity_notifications">Notifications</string>
+
+    <string name="submit_reading">Submit Readings</string>
+    <string name="view_reading">View Readings</string>
+    <string name="view_notification">Notifications</string>
+
+    <string name="capture_form_heading">Submit Water/Electricity Readings</string>
+    <string name="account_text">Choose Account Number</string>
+    <string name="surname_text">Surname:</string>
+    <string name="address_text">Address:</string>
+    <string name="contact_text">Contact:</string>
+    <string name="email_text">Email:</string>
+    <string name="bp_text">BP:</string>
+    <string name="portion_text">Portion:</string>
+    <string name="date_text">Date:</string>
+    <string name="second_heading">Enter your water and/or light readings</string>
+    <string name="water_meter_reading_text">Water Meter Readings</string>
+    <string name="electricity_meter_reading_text">Electricity Meter Readings</string>
+    <string name="third_heading">Provide a picture of your meter readings [optional]</string>
+    <string name="water_reading_evidence">Water Meter Readings Evidence</string>
+    <string name="electricity_reading_evidence">Electricity Meter Readings Evidence</string>
+
+    <string name="water_evidence">Take Picture</string>
+    <string name="electricity_evidence">Take Picture</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="new_property">Add new Property</string>
+    <string name="title_activity_property">PropertyActivity</string>
+    <string name="property">Add Property</string>
+    
+    <string name="property_form_heading">Add Property</string>
+    <string name="account_no_text">Account Number</string>
+    <string name="initials">Initials</string>
+    <string name="submit_property">Add Property</string>
+    <string name="logout">Logout</string>
+
+    <string name="prompt_password_confirm">Confirm Password</string>
+    <string name="prompt_email_register">email@email.com</string>
+    <!--<string name="error_field_required">This field is required</string>  -->
+</resources>

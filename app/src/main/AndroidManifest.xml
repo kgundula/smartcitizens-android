@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="app.defensivethinking.co.za.smartcitizen" >
+
+    <!-- To access Google+ APIs: -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".SmartCitizenLoginActivity"
+            android:label="@string/title_activity_smart_citizen_login"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SmartCitizenMainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" >
+
+        </activity>
+        <activity
+            android:name=".CaptureReadingActivity"
+            android:label="@string/title_activity_capture_reading"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
+        </activity>
+        <activity
+            android:name=".ViewReadingActivity"
+            android:label="@string/title_activity_view_reading"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
+        </activity>
+        <activity
+            android:name=".NotificationsActivity"
+            android:label="@string/title_activity_notifications"
+            android:parentActivityName=".SmartCitizenMainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
+        </activity>
+
+        <activity
+            android:name=".PropertyActivity"
+            android:label="@string/title_activity_property"
+            android:parentActivityName=".SmartCitizenMainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
+        </activity>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <provider
+            android:name=".data.SmartCitizenProvider"
+            android:authorities="app.defensivethinking.co.za.smartcitizen" />
+
+
+    </application>
+
+</manifest>

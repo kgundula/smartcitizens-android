@@ -1,0 +1,31 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".SmartCitizenMainActivity">
+
+    <item android:id="@+id/capture_reading"
+          android:title="@string/action_capture"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/view_reading"
+          android:title="@string/action_view_reading"
+          android:orderInCategory="200"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/notifications"
+          android:title="@string/action_notifications"
+          android:orderInCategory="300"
+          app:showAsAction="never" />
+
+    <item android:id="@+id/add_property"
+          android:title="@string/property"
+          android:orderInCategory="400"
+          app:showAsAction="never"
+        />
+
+    <item android:id="@+id/logout"
+          android:title="@string/logout"
+          android:orderInCategory="500"
+          app:showAsAction="never" />
+</menu>
