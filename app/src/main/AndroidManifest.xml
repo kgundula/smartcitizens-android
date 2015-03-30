@@ -31,7 +31,9 @@
         <activity
             android:name=".SmartCitizenMainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            >
 
         </activity>
         <activity

@@ -38,8 +38,8 @@ public class SmartCitizenDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_PROPERTY_TABLE = "CREATE TABLE " + PropertyEntry.TABLE_NAME + " ( " +
                 PropertyEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                PropertyEntry.COLUMN_PROPERTY_ID +" TEXT NOT NULL, " +
-                PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER +" TEXT NOT NULL, " +
+                PropertyEntry.COLUMN_PROPERTY_ID +" TEXT UNIQUE NOT NULL, " +
+                PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER +" TEXT UNIQUE NOT NULL, " +
                 PropertyEntry.COLUMN_PROPERTY_EMAIL +" TEXT NOT NULL, " +
                 PropertyEntry.COLUMN_PROPERTY_BP +" TEXT NOT NULL, " +
                 PropertyEntry.COLUMN_PROPERTY_PORTION +" TEXT NOT NULL, "+
@@ -50,7 +50,9 @@ public class SmartCitizenDbHelper extends SQLiteOpenHelper {
                 PropertyEntry.COLUMN_PROPERTY_PHYSICAL_ADDRESS +" TEXT NOT NULL, "+
                 PropertyEntry.COLUMN_PROPERTY_UPDATED + "  TEXT NOT NULL, " +
                 " FOREIGN KEY ( " + PropertyEntry.COLUMN_PROPERTY_OWNER + " ) REFERENCES " +
-                UserEntry.TABLE_NAME + " ( " + UserEntry.COLUMN_USER_ID + " ));";
+                UserEntry.TABLE_NAME + " ( " + UserEntry.COLUMN_USER_ID + " )" +
+                " UNIQUE (  "+ PropertyEntry.COLUMN_PROPERTY_ID + " , " + PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER +" ) ON CONFLICT IGNORE"+
+                " ); ";
 
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROPERTY_TABLE);

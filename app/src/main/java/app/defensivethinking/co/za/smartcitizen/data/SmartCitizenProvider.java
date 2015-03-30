@@ -237,7 +237,7 @@ public class SmartCitizenProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         Log.i("value", value.toString());
-                        long _id = db.insertWithOnConflict(SmartCitizenContract.PropertyEntry.TABLE_NAME, null, value, SQLiteDatabase.CONFLICT_IGNORE);
+                        long _id = db.insert(SmartCitizenContract.PropertyEntry.TABLE_NAME, null, value);
                         Log.i("my id ", String.valueOf(_id) );
                         if ( _id != -1) {
                             count++;

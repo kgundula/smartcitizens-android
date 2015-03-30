@@ -142,8 +142,9 @@ public class SmartCitizenLoginActivity extends Activity  {
         else
         {
             remember_me = true;
-            mAuthTask = new UserLoginTask(username, password);
-            mAuthTask.execute((Void) null);
+            Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
+            startActivity(intent);
+            finish();
         }
 
     }
@@ -363,7 +364,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
-                    return null;
+                    return false;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -373,7 +374,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 }
 
                 if (buffer.length() == 0) {
-                    return null;
+                    return false;
                 }
                 userJsonStr = buffer.toString();
             } catch (IOException e) {
@@ -559,7 +560,6 @@ public class SmartCitizenLoginActivity extends Activity  {
 
             JSONObject user = jsonObj.getJSONObject("user");
             JSONArray properties = jsonObj.getJSONArray("properties");
-            Log.i("user",user.toString());
 
             String username = user.getString("username");
             String updated  = user.getString("updated");

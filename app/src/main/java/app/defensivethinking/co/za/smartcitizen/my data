@@ -1,0 +1,43 @@
+ private ArrayAdapter<String> mPropertyAdapter;
+    Context context;
+
+
+    private List<PropertyAdapter.Property> propertyItemList = new ArrayList<PropertyAdapter.Property>();
+
+
+
+    private static final int PROPERTY_LOADER = 0;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_smart_citizen_main);
+        context = getApplicationContext();
+
+       // getLoaderManager().initLoader(PROPERTY_LOADER, null, this);
+
+    }
+
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.i("loader", DatabaseUtils.dumpCursorToString(data) );
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    public void onStop() {
+       // property_cursor.close();
+        user_cursor.close();
+        super.onStop();
+    }
+
+
+
