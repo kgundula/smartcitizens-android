@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,17 +51,6 @@ public class SmartCitizenLoginActivity extends Activity  {
     private static Boolean remember_me = false;
     private static final String email_reg_expr = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*\n"+"@[A-Za-z0-9-]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})$;";
 
-
-   /**
-    * A dummy authentication store containing known user names and passwords.
-    * TODO: remove after connecting to a real authentication system.
-    */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private UserLoginTask mAuthTask = null;
     private UserRegisterTask mRegisterTask = null;
     // UI references.
@@ -143,6 +133,8 @@ public class SmartCitizenLoginActivity extends Activity  {
 
 
             mLoginFormView = findViewById(R.id.login_form);
+            mLoginFormView.setVisibility(View.VISIBLE);
+            mLoginFormView.invalidate();
             mProgressView = findViewById(R.id.login_progress);
             mRegisterFormView = findViewById(R.id.register_form);
 
@@ -153,8 +145,6 @@ public class SmartCitizenLoginActivity extends Activity  {
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
-
-
 
     }
 
@@ -268,16 +258,13 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
 
     }
-
+    /*
     private boolean isEmailValid(String email) {
-
         matcher = pattern.matcher(email);
         return matcher.matches();
-
     }
-
+    */
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
@@ -442,7 +429,7 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
     }
 
-    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserRegisterTask extends AsyncTask<Void, Void, String> {
 
         private final String mEmail;
         private final String mPassword;
@@ -455,7 +442,7 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -464,7 +451,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             try {
 
                 final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
-                final String SMART_CITIZEN_URL = "http://" + base_url + "/users?";
+                final String SMART_CITIZEN_URL = "http://" + base_url + "/api/users?";
                 final String EMAIL_PARAM = "email";
                 final String USERNAME_PARAM = "username";
                 final String PASSWORD_PARAM = "password";
@@ -499,7 +486,16 @@ public class SmartCitizenLoginActivity extends Activity  {
 
             }
             catch (IOException e) {
-                return false;
+                JSONObject json = new JSONObject();
+                try {
+
+                    json.put("success","false");
+                    json.put("message", e.getMessage());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                return json.toString();
             }
             finally {
                 if (urlConnection != null) {
@@ -515,36 +511,42 @@ public class SmartCitizenLoginActivity extends Activity  {
             }
 
             Log.i("User ",userJsonStr);
-            /*
+
+            return userJsonStr;
+        }
+
+        @Override
+        protected void onPostExecute(final String result) {
+            mRegisterTask = null;
+            Boolean success = false;
+            showRegisterProgress(false);
             try {
-               getUserDataFromJson(userJsonStr);
+                JSONObject my_json = new JSONObject(result);
+                // {"success":false,"message":"There was Error Registering Your Account."}
+                TextView error_message = (TextView) findViewById(R.id.error_message);
+                success = Boolean.valueOf(my_json.getString("success"));
+                if ( my_json.getString("success").equals("false") ) {
+
+                    error_message.setText(my_json.getString("message"));
+                    error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+                    error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+                    error_message.setVisibility(View.VISIBLE);
+                    error_message.invalidate();
+
+                }
+                else {
+                    // savePassword(mPassword);
+                    // saveUsername(mUsername);
+                    // Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
+                    // startActivity(intent);
+                    // finish();
+                }
+                //getUserDataFromJson(userJsonStr);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
             }
-            */
-            return true;
-        }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mRegisterTask = null;
-
-            showRegisterProgress(false);
-
-            if (success) {
-
-                Log.i("Riley", "Was her");
-               // savePassword(mPassword);
-               // Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
-               // startActivity(intent);
-               // finish();
-
-            } else {
-
-                //mPasswordView.setError(getString(R.string.error_incorrect_password));
-                //mPasswordView.requestFocus();
-            }
         }
 
     }
@@ -557,27 +559,15 @@ public class SmartCitizenLoginActivity extends Activity  {
 
             JSONObject user = jsonObj.getJSONObject("user");
             JSONArray properties = jsonObj.getJSONArray("properties");
-            // Log.i("user",userJsonStr);
+            Log.i("user",user.toString());
 
-            //  {"username":"kgundula@defensivethinking.co.za",
-            //   "_id":"54fb13153a4e22ad758ccfdf",
-            //   "updated":"2015-03-07T15:02:45.588Z",
-            //   "email":"kgundula@defensivethinking.co.za",
-            //   "hash":"17a389ccb9b6fae491321809b656ea41902f586aae3a0fc1ca0ef6954d6528ff97db3c3a378d022fc8343bee664264f7c986ea6723991793a6404433a1a92a62fd4c0f7c2402193cdc0c20a3c30809ed39149f25df22bb21722ff3e04a4de8cb3e3edb8d8595b33546456b66bbd7592e11b550a29cbf43ce1938189473528602c824f0a1ba289fa0f661e9a3737c7bdaae622d965dd2290d608d146e429dba5e58d4e05ad521b13fd7c63c78ebe7dab5e6a82e83d253eee90930feff8118a0abee3568d40e7200e4a6a934905b5206ad2cf554ee2352d4e9ecd71e4b19d79d5bc110d28bf365397f900095a2f0caa53d63d766f45cd5ec2a5e6b7a55f1bb96b599dc2577f1d24b6317a2e0ba421f4b44ee5138deb0161e93a6c9fc59e287e54cd544b4ab75a0b4d4358c43140149ab78af17a62cf21015315bc55c3ed137ebd1dc21452a2f462580dbb38f0b59c4402d15fae716a666e51c8d9e72d909ce26ce8d28d365ec4ac9986f745a92ee639e613f07c276bcf3b39bab4e67142e32b641c5dec5cbd89706e9bf425729c93eea82dc6b22664c3b00bc52bf54a2800e743609213ef14ed7766a3ec8abd84ebc8a3e8d09412ebe149b701ab51f2f002cc0e1df90a904c05bd85a961693f3a4b3d1d2a5c2f948e58a18632ec555b7c79fb1881e705c69b9afcddedc7c74d1b4edd760cd415fbc724c111d5fab8ca01135a2e7",
-            //   "__v":0,"password":"this-is-not-it",
-            //   "salt":"9682d49428477dbc17fafcce3c7ea204817e5cb17941c263692a4be9226186b6"}
-
-            // {"user":{"password":"this-is-not-it","_id":"54fb13153a4e22ad758ccfdf","salt":"9682d49428477dbc17fafcce3c7ea204817e5cb17941c263692a4be9226186b6","hash":"17a389ccb9b6fae491321809b656ea41902f586aae3a0fc1ca0ef6954d6528ff97db3c3a378d022fc8343bee664264f7c986ea6723991793a6404433a1a92a62fd4c0f7c2402193cdc0c20a3c30809ed39149f25df22bb21722ff3e04a4de8cb3e3edb8d8595b33546456b66bbd7592e11b550a29cbf43ce1938189473528602c824f0a1ba289fa0f661e9a3737c7bdaae622d965dd2290d608d146e429dba5e58d4e05ad521b13fd7c63c78ebe7dab5e6a82e83d253eee90930feff8118a0abee3568d40e7200e4a6a934905b5206ad2cf554ee2352d4e9ecd71e4b19d79d5bc110d28bf365397f900095a2f0caa53d63d766f45cd5ec2a5e6b7a55f1bb96b599dc2577f1d24b6317a2e0ba421f4b44ee5138deb0161e93a6c9fc59e287e54cd544b4ab75a0b4d4358c43140149ab78af17a62cf21015315bc55c3ed137ebd1dc21452a2f462580dbb38f0b59c4402d15fae716a666e51c8d9e72d909ce26ce8d28d365ec4ac9986f745a92ee639e613f07c276bcf3b39bab4e67142e32b641c5dec5cbd89706e9bf425729c93eea82dc6b22664c3b00bc52bf54a2800e743609213ef14ed7766a3ec8abd84ebc8a3e8d09412ebe149b701ab51f2f002cc0e1df90a904c05bd85a961693f3a4b3d1d2a5c2f948e58a18632ec555b7c79fb1881e705c69b9afcddedc7c74d1b4edd760cd415fbc724c111d5fab8ca01135a2e7","username":"kgundula@defensivethinking.co.za","email":"kgundula@defensivethinking.co.za","__v":0,"updated":"2015-03-07T15:02:45.588Z"},
-            // "properties":[
-            // {"_id":"54fb1456e5694d63761d65e9","portion":"A2","accountnumber":"123456789","bp":"01","contacttel":"0721234567","email":"kgundula@defensivethinking.co.za","initials":"K","surname":"Gundula","physicaladdress":"94043 Mountain View","owner":"54fb13153a4e22ad758ccfdf","__v":0,"updated":"2015-03-07T15:08:06.140Z"},
-            // {"_id":"550d5b94e5694d63761d65ed","portion":"B11","accountnumber":"23142341234","bp":"02","contacttel":"0721235656","email":"kgundula@defensivethinking.co.za","initials":"KG","surname":"Gundula","physicaladdress":"12 Terrance Woods Drive ","owner":"54fb13153a4e22ad758ccfdf","__v":0,"updated":"2015-03-21T11:52:52.384Z"}]}
             String username = user.getString("username");
             String updated  = user.getString("updated");
             String email    = user.getString("email");
             String hash     = user.getString("hash");
             String salt     = user.getString("salt");
             String _ID      = user.getString("_id");
-
+            saveUsername(username);
             Vector<ContentValues> cVVector = new Vector<ContentValues>(properties.length());
 
             ContentValues userValues = new ContentValues();
@@ -591,7 +581,7 @@ public class SmartCitizenLoginActivity extends Activity  {
 
             try {
                 getContentResolver().insert(SmartCitizenContract.UserEntry.CONTENT_URI, userValues);
-                saveUsername(username);
+
             } catch (Exception e)
             {
                 e.printStackTrace();

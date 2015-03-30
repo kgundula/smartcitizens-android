@@ -1,5 +1,6 @@
 package app.defensivethinking.co.za.smartcitizen;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +12,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +29,7 @@ import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.Proper
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.UserEntry;
 
 
-public class SmartCitizenMainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SmartCitizenMainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ArrayAdapter<String> mPropertyAdapter;
     Context context;
@@ -57,6 +57,8 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Loade
         setContentView(R.layout.activity_smart_citizen_main);
         context = getApplicationContext();
 
+       // getLoaderManager().initLoader(PROPERTY_LOADER, null, this);
+
         TextView welcome_email_text = (TextView) findViewById(R.id.welcome_email_text);
         user_cursor = getContentResolver().query(UserEntry.CONTENT_URI,USER_PROJECTION, null, null, null);
         //String property_owner = "";
@@ -68,17 +70,6 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Loade
 
         ListView listView = (ListView) findViewById(R.id.listview_properties);
         listView.setAdapter(mPropertyAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                //String forecast = mPropertytAdapter.getItem(position);
-                // Intent intent = new Intent(getActivity(), DetailActivity.class)
-                //       .putExtra(Intent.EXTRA_TEXT, forecast);
-                //startActivity(intent);
-            }
-        });
-
 
         ImageView imgCaptureReading = (ImageView) findViewById(R.id.imgCaptureReading);
         imgCaptureReading.setOnClickListener(new View.OnClickListener() {
@@ -133,18 +124,16 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Loade
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // This is called when a new Loader needs to be created.  This
-        // fragment only uses one loader, so we don't care about checking the id.
 
         String sortOrder = PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER + " ASC";
 
-        Uri propertyWithPropertyOwnerUri = PropertyEntry.buildPropertyWithPropertyOwner(property_owner);
+        Uri uri = PropertyEntry.CONTENT_URI;
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
         return new CursorLoader(
-                this,
-                propertyWithPropertyOwnerUri,
+                this.getActivity(),
+                uri,
                 PROJECTION,
                 null,
                 null,
@@ -154,7 +143,7 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        Log.i("loader", DatabaseUtils.dumpCursorToString(data) );
     }
 
     @Override
@@ -219,7 +208,6 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Loade
         else if (id == R.id.logout) {
             deleteUsername();
             deletePassword();
-            //SmartCitizenMainActivity
             Intent intent = new Intent(SmartCitizenMainActivity.this, SmartCitizenLoginActivity.class);
             startActivity(intent);
             finish();
@@ -229,15 +217,6 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Loade
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    public void getPropertyProvider() {
-        Cursor cursor = getContentResolver().query(PropertyEntry.CONTENT_URI, PROJECTION, null, null, null);
-
-
-        //mAdapter = new PropertyAdapter(context, c, 1);
-        //setListAdapter(mAdapter);
     }
 
     public void deleteUsername () {

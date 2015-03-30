@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
@@ -91,20 +92,25 @@ public class CaptureReadingActivity extends ActionBarActivity {
         String today = utility.getDbDateString(date);
 
         acc_date.setText(today);
+        Uri properties = SmartCitizenContract.PropertyEntry.CONTENT_URI;
+        Log.i("property uri", properties.toString());
 
-        property_cursor = getContentResolver().query(SmartCitizenContract.PropertyEntry.CONTENT_URI, PROPERTY_PROJECTION, null, null, null);
+        property_cursor = getContentResolver().query(properties, PROPERTY_PROJECTION, null, null, null);
         user_cursor = getContentResolver().query(SmartCitizenContract.UserEntry.CONTENT_URI, USER_PROJECTION, null, null, null );
 
-        if (property_cursor != null && property_cursor.moveToFirst()){
-            Log.i("Cursor", DatabaseUtils.dumpCursorToString(property_cursor));
+        if ( property_cursor.moveToFirst()){
 
-            acc_contact.setText(property_cursor.getString(1));
-            acc_portion.setText(property_cursor.getString(2));
-            acc_name.setText(property_cursor.getString(3));
-            acc_email.setText(property_cursor.getString(5));
-            acc_bp.setText(property_cursor.getString(6));
-            acc_surname.setText(property_cursor.getString(8));
-            acc_address.setText(property_cursor.getString(10));
+            do {
+                Log.i("Property Cursor", DatabaseUtils.dumpCursorToString(property_cursor));
+                acc_contact.setText(property_cursor.getString(1));
+                acc_portion.setText(property_cursor.getString(2));
+                acc_name.setText(property_cursor.getString(3));
+                acc_email.setText(property_cursor.getString(5));
+                acc_bp.setText(property_cursor.getString(6));
+                acc_surname.setText(property_cursor.getString(8));
+                acc_address.setText(property_cursor.getString(10));
+            } while (property_cursor.moveToNext());
+
         }
 
         if (user_cursor != null && user_cursor.moveToFirst()) {
@@ -144,8 +150,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 String bp             = acc_bp.getText().toString().trim();
                 String portion        = acc_portion.getText().toString().trim();
                 String date           = acc_date.getText().toString().trim();
-
-
 
             }
         });

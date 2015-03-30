@@ -1,5 +1,5 @@
 <resources>
-    <string name="title_activity_smart_citizen_login">Sign in</string>
+    <string name="title_activity_smart_citizen_login">Smart Citizen</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -12,7 +12,7 @@
     <string name="action_forgot">Forgot Password</string>
 
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_password">This password is too short, password needs to be more than 5 characters </string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_password_match">Password does not match</string>

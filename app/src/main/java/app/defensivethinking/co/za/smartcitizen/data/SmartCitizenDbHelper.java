@@ -50,9 +50,7 @@ public class SmartCitizenDbHelper extends SQLiteOpenHelper {
                 PropertyEntry.COLUMN_PROPERTY_PHYSICAL_ADDRESS +" TEXT NOT NULL, "+
                 PropertyEntry.COLUMN_PROPERTY_UPDATED + "  TEXT NOT NULL, " +
                 " FOREIGN KEY ( " + PropertyEntry.COLUMN_PROPERTY_OWNER + " ) REFERENCES " +
-                UserEntry.TABLE_NAME + " ( " + UserEntry.COLUMN_USER_ID + " ), " +
-
-                " UNIQUE ( "  + PropertyEntry.COLUMN_PROPERTY_OWNER + ") ON CONFLICT REPLACE );";
+                UserEntry.TABLE_NAME + " ( " + UserEntry.COLUMN_USER_ID + " ));";
 
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROPERTY_TABLE);

@@ -21,8 +21,8 @@ public class SmartCitizenProvider extends ContentProvider {
 
     private static final int USER = 100;
 
-    private static final int PROPERTY = 200;
-    private static final int PROPERTY_ID = 201;
+    private static final int PROPERTY = 300;
+    private static final int PROPERTY_ID = 301;
 
     private static final SQLiteQueryBuilder sPropertyByOwnerQueryBuilder;
 
@@ -90,7 +90,8 @@ public class SmartCitizenProvider extends ContentProvider {
             }
 
             case PROPERTY: {
-                smartCursor = mOpenHelper.getReadableDatabase().query(
+                smartCursor =
+                        mOpenHelper.getReadableDatabase().query(
                         SmartCitizenContract.PropertyEntry.TABLE_NAME,
                         projection,
                         selection,
@@ -99,6 +100,7 @@ public class SmartCitizenProvider extends ContentProvider {
                         null,
                         sortOrder
                 );
+
                 Log.i("Cursor", "Riley was her");
                 break;
             }
@@ -171,6 +173,7 @@ public class SmartCitizenProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return smartUri;
+
     }
 
     @Override
@@ -234,8 +237,8 @@ public class SmartCitizenProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         Log.i("value", value.toString());
-                        long _id = db.insertWithOnConflict(SmartCitizenContract.PropertyEntry.TABLE_NAME, null, value, SQLiteDatabase.CONFLICT_REPLACE);
-                        Log.i("id ", String.valueOf(_id) );
+                        long _id = db.insertWithOnConflict(SmartCitizenContract.PropertyEntry.TABLE_NAME, null, value, SQLiteDatabase.CONFLICT_IGNORE);
+                        Log.i("my id ", String.valueOf(_id) );
                         if ( _id != -1) {
                             count++;
                         }
