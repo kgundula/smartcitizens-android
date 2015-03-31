@@ -12,11 +12,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
 import app.defensivethinking.co.za.smartcitizen.utility.utility;
@@ -62,10 +67,11 @@ public class CaptureReadingActivity extends ActionBarActivity {
     static int REQUEST_ELECTRICITY_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     ImageView water_reading_pic, electricity_reading_pic;
-    EditText acc_water_reading, acc_electricity_reading,acc_name, acc_surname, acc_address,
+    Spinner acc_name;
+    EditText acc_water_reading, acc_electricity_reading, acc_surname, acc_address,
             acc_contact, acc_email , acc_bp , acc_portion, acc_date;
     Cursor property_cursor,user_cursor;
-
+    int[] myPropertyId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +85,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
         acc_water_reading = (EditText) findViewById(R.id.water_reading);
         acc_electricity_reading = (EditText) findViewById(R.id.electricity_reading);
-        acc_name = (EditText) findViewById(R.id.account_name);
+        acc_name = (Spinner) findViewById(R.id.account_name);
         acc_surname = (EditText) findViewById(R.id.surname);
         acc_address = (EditText) findViewById(R.id.address);
         acc_contact  = (EditText) findViewById(R.id.contact);
@@ -93,33 +99,64 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
         acc_date.setText(today);
         Uri properties = SmartCitizenContract.PropertyEntry.CONTENT_URI;
-        Log.i("property uri", properties.toString());
 
         property_cursor = getContentResolver().query(properties, PROPERTY_PROJECTION, null, null, null);
         user_cursor = getContentResolver().query(SmartCitizenContract.UserEntry.CONTENT_URI, USER_PROJECTION, null, null, null );
 
+        final List<String> accountNameList = new ArrayList<String>();
+        final List<String> accountIdList = new ArrayList<String>();
+
         if ( property_cursor.moveToFirst()){
 
             do {
-                Log.i("Property Cursor", DatabaseUtils.dumpCursorToString(property_cursor));
-                acc_contact.setText(property_cursor.getString(1));
-                acc_portion.setText(property_cursor.getString(2));
-                acc_name.setText(property_cursor.getString(3));
-                acc_email.setText(property_cursor.getString(5));
-                acc_bp.setText(property_cursor.getString(6));
-                acc_surname.setText(property_cursor.getString(8));
-                acc_address.setText(property_cursor.getString(10));
+                accountNameList.add(property_cursor.getString(3));
+                //Log.i("_ID",property_cursor.getString(0));
+                accountIdList.add(property_cursor.getString(0));
+
             } while (property_cursor.moveToNext());
 
         }
-        /*
-        Spinner spinner = (Spinner) findViewById(R.id.account_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.planets_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        */
 
+
+        ArrayAdapter<String> adapter =new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,accountNameList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        acc_name.setAdapter(adapter);
+        acc_name.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                               int arg2, long arg3) {
+                        int position = acc_name.getSelectedItemPosition();
+
+                        String  _ID = accountIdList.get(position);
+                        Log.i("_ID", ""+_ID);
+                        if ( property_cursor.moveToFirst()) {
+                            do {
+
+                                if ( _ID.equals(property_cursor.getString(0)) ) {
+
+                                    acc_contact.setText(property_cursor.getString(1));
+                                    acc_portion.setText(property_cursor.getString(2));
+                                    acc_email.setText(property_cursor.getString(5));
+                                    acc_bp.setText(property_cursor.getString(6));
+                                    acc_surname.setText(property_cursor.getString(8));
+                                    acc_address.setText(property_cursor.getString(10));
+
+                                }
+
+                            } while (property_cursor.moveToNext());
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                        // TODO Auto-generated method stub
+                    }
+                }
+        );
+        /*
+
+         */
         if (user_cursor != null && user_cursor.moveToFirst()) {
             Log.i("User", DatabaseUtils.dumpCursorToString(user_cursor));
             //acc_name.setText();
@@ -149,7 +186,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                String account_number = acc_name.getText().toString().trim();
+                String account_number = acc_name.get //getText().toString().trim();
                 String surname        = acc_surname.getText().toString().trim();
                 String address        = acc_address.getText().toString().trim();
                 String contact        = acc_contact.getText().toString().trim();

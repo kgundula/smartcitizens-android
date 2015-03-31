@@ -155,7 +155,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="horizontal"
-                android:layout_weight="0.08"
+                android:layout_weight="0.2"
                 android:layout_marginTop="5dp">
 
                 <TextView
@@ -166,7 +166,8 @@
                     android:text="@string/my_property_header"
                     android:textColor="@color/smart_citizen_blue"
                     android:gravity="center_vertical"
-                    android:layout_margin="5dp"/>
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"/>
                 <!--
                <Button
                    android:layout_width="0dp"
@@ -185,7 +186,8 @@
                 android:layout_weight="0.4"
                 android:id="@+id/listview_properties"
                 android:divider="@null"
-                android:smoothScrollbar="true">
+                android:smoothScrollbar="true"
+                android:layout_marginLeft="5dp">
 
 
             </ListView>
