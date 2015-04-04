@@ -43,6 +43,10 @@ public class SmartCitizenContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static String getUserByEmail  (Uri uri) {
+            return uri.getQueryParameter(COLUMN_USER_EMAIL);
+
+        }
     }
 
     public static final class PropertyEntry implements BaseColumns {

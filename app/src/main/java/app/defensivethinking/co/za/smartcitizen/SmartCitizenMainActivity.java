@@ -18,13 +18,13 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_citizen_main);
 
-        //if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
             SmartCitizenMainFragment fragment = new SmartCitizenMainFragment();
             fragment.setRetainInstance(true);
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_main , fragment).commit();
-       // }
+        }
 
     }
 

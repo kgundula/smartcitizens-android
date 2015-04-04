@@ -11,9 +11,15 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -139,8 +145,10 @@ public class PropertyActivity extends ActionBarActivity {
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties";
 
-        Log.i("Json Body", property.toString());
         Log.i("Url ", SMART_CITIZEN_URL);
+        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.invalidate();
+
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL, property , new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
@@ -148,11 +156,12 @@ public class PropertyActivity extends ActionBarActivity {
                 try {
                     Log.i(LOG_TAG, jsonObject.toString());
                     Boolean success = jsonObject.getBoolean("success");
-
+                    progressBar.setVisibility(View.INVISIBLE);
+                    progressBar.invalidate();
                     // {"success":true,"property":{"__v":0,"_id":"551d2dea5672a1a445e8c58e","updated":"2015-04-02T11:54:18.331Z"}}
-
+                    String message = "";
                     if ( success ) {
-                        String message = "Property Added Successfully";
+                        message = "Property Added Successfully";
                         JSONObject myProperty = new JSONObject("property");
 
 
@@ -191,18 +200,39 @@ public class PropertyActivity extends ActionBarActivity {
 
                     }
                     else {
-
+                        message = jsonObject.getString("error");
                     }
 
-                } catch (Exception ex ) {
+                    error_message.setText(message);
+                    error_message.setVisibility(View.VISIBLE);
+                    error_message.invalidate();
 
+                } catch (Exception ex ) {
+                    ex.printStackTrace();
                 }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                String error_msg = "";
+                if( error instanceof NetworkError) {
+                    error_msg = "Network Error";
+                } else if( error instanceof ServerError) {
+                    error_msg = error.getMessage();
+                } else if( error instanceof AuthFailureError) {
+                    error_msg = error.getMessage();
+                } else if( error instanceof ParseError) {
+                    error_msg = error.getMessage();
+                } else if( error instanceof NoConnectionError) {
+                    error_msg = error.getMessage();
+                } else if( error instanceof TimeoutError) {
+                    error_msg = error.getMessage();
+                }
 
+                error_message.setText(error_msg);
+                error_message.setVisibility(View.VISIBLE);
+                error_message.invalidate();
             }
         });
 

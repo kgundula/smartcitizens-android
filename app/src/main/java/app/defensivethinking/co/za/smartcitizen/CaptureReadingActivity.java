@@ -27,6 +27,8 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -257,12 +259,11 @@ public class CaptureReadingActivity extends ActionBarActivity {
                     cancel = true;
                 }
 
-
                 if (cancel) {
                     focusView.requestFocus();
                 } else {
 
-
+                    addReading(account_number, surname, address, contact,email,bp, portion,date,water_reading,electricity_reading);
                 }
 
             }
@@ -310,17 +311,12 @@ public class CaptureReadingActivity extends ActionBarActivity {
     public void addReading(String account_number, String surname, String address, String contact, String email,
                            String bp, String portion, String date, String water_reading, String electricity_reading  ) {
 
-        /*
-            "account" : req.body.accountNumber,
-            "bp" : req.body.bp,
-            "date" : req.body.readingDate,
-            "portion" : req.body.portion,
-            "electricity" : req.body.electricity,
-            "water" : req.body.water,
-            "electricityimage": "",
-            "waterimage": ""
+        if(utility.cookieManager == null)
+            utility.cookieManager = new CookieManager();
+        CookieHandler.setDefault(utility.cookieManager);
 
-        */
+
+        RequestQueue rq = Volley.newRequestQueue(this);
 
         JSONObject readings = new JSONObject();
 
@@ -328,21 +324,18 @@ public class CaptureReadingActivity extends ActionBarActivity {
             readings.put("portion", portion);
             readings.put("accountNumber",account_number);
             readings.put("bp", bp);
-            //readings.put("contacttel", contact);
-            //readings.put("email", email);
-            readings.put("water_reading", water_reading);
-            readings.put("electricity_reading", electricity_reading);
-            //readings.put("surname", surname);
-            //readings.put("physicaladdress",address);
+            readings.put("water", water_reading);
+            readings.put("electricity", electricity_reading);
             readings.put("readingDate", date);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        RequestQueue rq = Volley.newRequestQueue(this);
 
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
+
+        Log.i("Reading", readings.toString());
 
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL,readings, new Response.Listener<JSONObject>() {
             @Override

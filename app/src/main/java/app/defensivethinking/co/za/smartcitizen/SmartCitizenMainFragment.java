@@ -4,9 +4,11 @@ package app.defensivethinking.co.za.smartcitizen;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -73,11 +75,17 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-       mPropertyAdapter = new PropertyAdapter(getActivity(), null,0);
+        mPropertyAdapter = new PropertyAdapter(getActivity(), null,0);
 
         View rootView = inflater.inflate(R.layout.fragment_smart_citizen_main, container, false);
         TextView welcome_email_text = (TextView) rootView.findViewById(R.id.welcome_email_text);
-        user_cursor =  getActivity().getContentResolver().query(UserEntry.CONTENT_URI,USER_PROJECTION, null, null, null);
+
+        String email_address = getUsername();
+
+        String userSelection = "(" + UserEntry.COLUMN_USER_EMAIL + " = ? )";
+        String[] userSelectAgs = new String[] {email_address};
+
+        user_cursor =  getActivity().getContentResolver().query(UserEntry.CONTENT_URI , USER_PROJECTION, userSelection, userSelectAgs, null);
 
         if ( user_cursor != null && user_cursor.moveToFirst() ) {
             property_owner = user_cursor.getString(0);
@@ -143,6 +151,7 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         }
 
         user_cursor.close();
+        //property_cursor.close();
         return rootView;
     }
 
@@ -170,13 +179,10 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER + " ASC";
 
-        Uri uri = PropertyEntry.CONTENT_URI;
-
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed.
+        Uri property_uri = PropertyEntry.CONTENT_URI;
         return new CursorLoader(
                 getActivity(),
-                uri,
+                property_uri,
                 PROJECTION,
                 null,
                 null,
@@ -214,4 +220,11 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         Intent intent = new Intent(getActivity(), ViewReadingActivity.class);
         startActivity(intent);
     }
+
+    public String getUsername() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String username = settings.getString("username", "");
+        return username;
+    }
+
 }

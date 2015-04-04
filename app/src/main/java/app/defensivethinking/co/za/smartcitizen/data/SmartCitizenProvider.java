@@ -20,7 +20,7 @@ public class SmartCitizenProvider extends ContentProvider {
     private SmartCitizenDbHelper mOpenHelper;
 
     private static final int USER = 100;
-
+    private static final int USER_ID = 101;
     private static final int PROPERTY = 300;
     private static final int PROPERTY_ID = 301;
 
@@ -40,6 +40,21 @@ public class SmartCitizenProvider extends ContentProvider {
     private static final String sPropertyOwnerSelection =
             SmartCitizenContract.PropertyEntry.TABLE_NAME+"."+SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_OWNER + " = ? ";
 
+    private static final String sUserEmailSection = SmartCitizenContract.UserEntry.TABLE_NAME+"."+SmartCitizenContract.UserEntry.COLUMN_USER_EMAIL + " = ?";
+
+    private Cursor getUserByEmail (Uri uri, String[] projection, String sortOrder ) {
+
+        String user = SmartCitizenContract.UserEntry.getUserByEmail(uri);
+
+        String[] selectArgs;
+        String selection;
+
+        selectArgs = new String[]{user};
+        selection = sUserEmailSection;
+
+        return sPropertyByOwnerQueryBuilder.query(mOpenHelper.getReadableDatabase(), projection, selection, selectArgs, null, null, sortOrder);
+    }
+
     private Cursor getPropertyByOwner ( Uri uri, String[] projection, String sortOrder ) {
         String property = SmartCitizenContract.PropertyEntry.getPropertyOwnerFromUri(uri);
 
@@ -58,6 +73,7 @@ public class SmartCitizenProvider extends ContentProvider {
         final String authority = SmartCitizenContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, SmartCitizenContract.PATH_USER, USER);
+        matcher.addURI(authority, SmartCitizenContract.PATH_USER +"/#", USER_ID);
         matcher.addURI(authority, SmartCitizenContract.PATH_PROPERTY, PROPERTY);
         matcher.addURI(authority, SmartCitizenContract.PATH_PROPERTY +"/#", PROPERTY_ID);
 
@@ -88,7 +104,18 @@ public class SmartCitizenProvider extends ContentProvider {
                 );
                 break;
             }
-
+            case USER_ID: {
+                smartCursor = mOpenHelper.getReadableDatabase().query(
+                        SmartCitizenContract.UserEntry.TABLE_NAME,
+                        projection,
+                        SmartCitizenContract.UserEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
+                        null,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
             case PROPERTY: {
                 smartCursor =
                         mOpenHelper.getReadableDatabase().query(
@@ -131,6 +158,8 @@ public class SmartCitizenProvider extends ContentProvider {
         switch (match) {
             case USER:
                 return SmartCitizenContract.UserEntry.CONTENT_TYPE;
+            case USER_ID:
+                return SmartCitizenContract.UserEntry.CONTENT_ITEM_TYPE;
             case PROPERTY :
                 return SmartCitizenContract.PropertyEntry.CONTENT_TYPE;
             case PROPERTY_ID :

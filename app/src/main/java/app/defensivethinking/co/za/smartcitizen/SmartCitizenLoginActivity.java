@@ -25,10 +25,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Vector;
@@ -36,6 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
+import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
 
 /**
@@ -259,12 +264,7 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
 
     }
-    /*
-    private boolean isEmailValid(String email) {
-        matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-    */
+
     private boolean isPasswordValid(String password) {
         return password.length() > 4;
     }
@@ -327,6 +327,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
@@ -350,6 +351,10 @@ public class SmartCitizenLoginActivity extends Activity  {
                 final String SMART_CITIZEN_URL = "http://"+base_url+"/api/login?";
                 final String USERNAME_PARAM = "username";
                 final String PASSWORD_PARAM = "password";
+
+                if(utility.cookieManager == null)
+                    utility.cookieManager = new CookieManager();
+                CookieHandler.setDefault(utility.cookieManager);
 
                 Uri builtUri = Uri.parse(SMART_CITIZEN_URL).buildUpon()
                         .appendQueryParameter(USERNAME_PARAM, mEmail)
@@ -457,16 +462,43 @@ public class SmartCitizenLoginActivity extends Activity  {
                 final String USERNAME_PARAM = "username";
                 final String PASSWORD_PARAM = "password";
 
+                JSONObject user_reg = new JSONObject();
+
+                try {
+
+                    user_reg.put(EMAIL_PARAM, mEmail);
+                    user_reg.put(USERNAME_PARAM, mUsername);
+                    user_reg.put(PASSWORD_PARAM, mPassword);
+
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 Uri builtUri = Uri.parse(SMART_CITIZEN_URL).buildUpon()
-                        .appendQueryParameter(EMAIL_PARAM, mEmail)
-                        .appendQueryParameter(USERNAME_PARAM, mUsername)
-                        .appendQueryParameter(PASSWORD_PARAM, mPassword)
+
                         .build();
                 Log.i("url", builtUri.toString());
+                if(utility.cookieManager == null)
+                    utility.cookieManager = new CookieManager();
+                CookieHandler.setDefault(utility.cookieManager);
+                String body = user_reg.toString();
+
                 URL url = new URL(builtUri.toString());
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+                urlConnection.setFixedLengthStreamingMode(body.getBytes().length);
+
+                urlConnection.setRequestProperty("Content-Type", "application/json");
                 urlConnection.connect();
+
+                OutputStream os = new BufferedOutputStream(urlConnection.getOutputStream());
+                os.write(body.getBytes());
+                //clean up
+                os.flush();
 
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
@@ -536,11 +568,11 @@ public class SmartCitizenLoginActivity extends Activity  {
 
                 }
                 else {
-                    // savePassword(mPassword);
-                    // saveUsername(mUsername);
-                    // Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
-                    // startActivity(intent);
-                    // finish();
+                    savePassword(mPassword);
+                    saveUsername(mUsername);
+                    Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
                 //getUserDataFromJson(userJsonStr);
             } catch (JSONException e) {
@@ -646,7 +678,6 @@ public class SmartCitizenLoginActivity extends Activity  {
     }
 
     public void saveUsername (String username) {
-        Log.i("User", username);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("username", username);
