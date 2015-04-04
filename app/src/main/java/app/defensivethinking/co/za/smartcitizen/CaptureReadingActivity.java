@@ -8,9 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +17,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -186,7 +194,10 @@ public class CaptureReadingActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                String account_number = acc_name.get //getText().toString().trim();
+                boolean cancel = false;
+                View focusView = null;
+
+                String account_number = acc_name.getSelectedItem().toString().trim();
                 String surname        = acc_surname.getText().toString().trim();
                 String address        = acc_address.getText().toString().trim();
                 String contact        = acc_contact.getText().toString().trim();
@@ -194,6 +205,65 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 String bp             = acc_bp.getText().toString().trim();
                 String portion        = acc_portion.getText().toString().trim();
                 String date           = acc_date.getText().toString().trim();
+                String water_reading  = acc_water_reading.getText().toString().trim();
+                String electricity_reading = acc_electricity_reading.getText().toString().trim();
+
+                if (TextUtils.isEmpty(surname)) {
+                    acc_surname.setError(getString(R.string.error_field_required));
+                    focusView = acc_surname;
+                    cancel = true;
+                }
+
+                if (TextUtils.isEmpty(address)) {
+                    acc_address.setError(getString(R.string.error_field_required));
+                    focusView = acc_address;
+                    cancel = true;
+                }
+
+                if (TextUtils.isEmpty(contact)) {
+                    acc_contact.setError(getString(R.string.error_field_required));
+                    focusView = acc_contact;
+                    cancel = true;
+                }
+
+                if (TextUtils.isEmpty(email)) {
+                    acc_email.setError(getString(R.string.error_field_required));
+                    focusView = acc_email;
+                    cancel = true;
+                }
+
+                if (TextUtils.isEmpty(portion)) {
+                    acc_portion.setError(getString(R.string.error_field_required));
+                    focusView = acc_portion;
+                    cancel = true;
+                }
+
+
+                if (TextUtils.isEmpty(bp)) {
+                    acc_bp.setError(getString(R.string.error_field_required));
+                    focusView = acc_bp;
+                    cancel = true;
+                }
+
+                if (TextUtils.isEmpty(water_reading)) {
+                    acc_water_reading.setError(getString(R.string.error_field_required));
+                    focusView =acc_water_reading;
+                    cancel = true;
+                }
+
+                if (TextUtils.isEmpty(electricity_reading)) {
+                    acc_electricity_reading.setError(getString(R.string.error_field_required));
+                    focusView =acc_electricity_reading;
+                    cancel = true;
+                }
+
+
+                if (cancel) {
+                    focusView.requestFocus();
+                } else {
+
+
+                }
 
             }
         });
@@ -205,24 +275,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
         property_cursor.close();
         user_cursor.close();
         super.onStop();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_capture_reading, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -254,4 +306,63 @@ public class CaptureReadingActivity extends ActionBarActivity {
         }
     }
 
+
+    public void addReading(String account_number, String surname, String address, String contact, String email,
+                           String bp, String portion, String date, String water_reading, String electricity_reading  ) {
+
+        /*
+            "account" : req.body.accountNumber,
+            "bp" : req.body.bp,
+            "date" : req.body.readingDate,
+            "portion" : req.body.portion,
+            "electricity" : req.body.electricity,
+            "water" : req.body.water,
+            "electricityimage": "",
+            "waterimage": ""
+
+        */
+
+        JSONObject readings = new JSONObject();
+
+        try {
+            readings.put("portion", portion);
+            readings.put("accountNumber",account_number);
+            readings.put("bp", bp);
+            //readings.put("contacttel", contact);
+            //readings.put("email", email);
+            readings.put("water_reading", water_reading);
+            readings.put("electricity_reading", electricity_reading);
+            //readings.put("surname", surname);
+            //readings.put("physicaladdress",address);
+            readings.put("readingDate", date);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        RequestQueue rq = Volley.newRequestQueue(this);
+
+        final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+        final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
+
+        JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL,readings, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+
+                try {
+                    Log.i(LOG_TAG, jsonObject.toString());
+                } catch (Exception ex ) {
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        rq.add(propertyRequest);
+
+    }
 }

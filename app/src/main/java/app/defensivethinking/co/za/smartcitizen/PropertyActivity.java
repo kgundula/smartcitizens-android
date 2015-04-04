@@ -1,23 +1,26 @@
 package app.defensivethinking.co.za.smartcitizen;
 
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
+import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
 
 
 public class PropertyActivity extends ActionBarActivity {
@@ -26,10 +29,22 @@ public class PropertyActivity extends ActionBarActivity {
 
    private static EditText property_account, property_address, property_bp, property_contact,
             property_initials, property_surname, property_portion;
+    String owner, email;
+    static TextView error_message;
+    static ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_property);
+
+        Bundle extras = getIntent().getExtras();
+        if ( extras != null) {
+            email = extras.getString("user_email");
+            owner = extras.getString("property_owner");
+        }
+
+        error_message = (TextView) findViewById(R.id.error_message);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         property_account = (EditText) findViewById(R.id.property_account_no);
         property_address = (EditText) findViewById(R.id.property_address);
@@ -103,141 +118,98 @@ public class PropertyActivity extends ActionBarActivity {
 
     public void addProperty(String portion, String bp, String initials, String surname, String contact, String address, String account) {
 
+        RequestQueue rq = Volley.newRequestQueue(this);
 
-    }
+        JSONObject property = new JSONObject();
+        try {
+            property.put("portion", portion);
+            property.put("accountnumber",account);
+            property.put("bp", bp);
+            property.put("contacttel", contact);
+            property.put("email", email);
+            property.put("initials", initials);
+            property.put("surname", surname);
+            property.put("physicaladdress",address);
+            property.put("owner", owner);
 
-    public class UserPropertyTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mOwner;
-        private final String mPortion;
-        private final String mBp;
-        private final String mAccount;
-        private final String mAddress;
-        private final String mContact;
-        private final String mInitials;
-        private final String mSurname;
-
-        UserPropertyTask(String email, String owner, String portion, String bp, String account, String address, String contact, String initials, String surname ) {
-            mEmail = email;
-            mOwner = owner;
-            mPortion = portion;
-            mBp = bp;
-            mAccount  = account;
-            mAddress = address;
-            mContact = contact;
-            mInitials = initials;
-            mSurname = surname;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
+        final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+        final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties";
 
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String propertyJsonStr = "";
+        Log.i("Json Body", property.toString());
+        Log.i("Url ", SMART_CITIZEN_URL);
+        JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL, property , new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
 
-            try {
+                try {
+                    Log.i(LOG_TAG, jsonObject.toString());
+                    Boolean success = jsonObject.getBoolean("success");
 
-                final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
-                final String SMART_CITIZEN_URL = "http://"+base_url+"/api/addproperty?";
-                final String SURNAME_PARAM     = "surname";
-                final String INITIALS_PARAM    = "initials";
-                final String EMAIL_PARAM       = "email";
-                final String ACCOUNT_PARAM     = "account";
-                final String OWNER_PARAM       = "owner";
-                final String PORTION_PARAM     = "portion";
-                final String BP_PARAM          = "bp";
-                final String CONTACT_PARAM     = "contact";
-                final String ADDRESS_PARAM     = "address";
+                    // {"success":true,"property":{"__v":0,"_id":"551d2dea5672a1a445e8c58e","updated":"2015-04-02T11:54:18.331Z"}}
+
+                    if ( success ) {
+                        String message = "Property Added Successfully";
+                        JSONObject myProperty = new JSONObject("property");
 
 
+                        String _id = myProperty.getString("_id");
+                        String contact_tel = myProperty.getString("contacttel");
+                        String bp          = myProperty.getString("bp");
+                        String physical_address = myProperty.getString("physicaladdress");
+                        String property_updated = myProperty.getString("updated");
+                        String initials = myProperty.getString("initials");
+                        String property_email   = myProperty.getString("email");
+                        String owner = myProperty.getString("owner");
+                        String surname = myProperty.getString("surname");
+                        String account_number = myProperty.getString("accountnumber");
+                        String portion = myProperty.getString("portion");
 
-                Uri builtUri = Uri.parse(SMART_CITIZEN_URL).buildUpon()
-                        .appendQueryParameter(SURNAME_PARAM, mSurname)
-                        .appendQueryParameter(INITIALS_PARAM, mInitials)
-                        .appendQueryParameter(EMAIL_PARAM, mEmail)
-                        .appendQueryParameter(ACCOUNT_PARAM, mAccount)
-                        .appendQueryParameter(OWNER_PARAM, mOwner)
-                        .appendQueryParameter(PORTION_PARAM, mPortion)
-                        .build();
+                        ContentValues propertyValues = new ContentValues();
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_ID, _id);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER, account_number);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_BP, bp);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_CONTACT_TEL,contact_tel);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_EMAIL, property_email);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_PORTION, portion);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_SURNAME, surname);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_INITIALS, initials);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_OWNER, owner);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_UPDATED, property_updated);
+                        propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_PHYSICAL_ADDRESS,physical_address);
 
-                URL url = new URL(builtUri.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.connect();
+                        try {
+                            getContentResolver().insert(SmartCitizenContract.PropertyEntry.CONTENT_URI, propertyValues);
+                            getContentResolver().notifyChange(SmartCitizenContract.PropertyEntry.CONTENT_URI, null);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
 
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-
-                propertyJsonStr = buffer.toString();
-
-            } catch (IOException e) {
-                return false;
-            } finally {
-
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
                     }
+                    else {
+
+                    }
+
+                } catch (Exception ex ) {
+
                 }
+
             }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-            try {
-                //addProperty(userJsonStr);
-            } catch (Exception e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
             }
+        });
 
-            return true;
-        }
+        rq.add(propertyRequest);
 
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-
-
-        }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_property, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

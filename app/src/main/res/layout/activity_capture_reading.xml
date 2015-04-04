@@ -199,7 +199,8 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="5dp"
-                android:textColor="@color/smart_citizen_text_color"/>
+                android:textColor="@color/smart_citizen_text_color"
+                android:editable="false"/>
 
             <TextView
                 android:layout_width="match_parent"

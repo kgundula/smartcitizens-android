@@ -17,6 +17,30 @@
         android:layout_marginRight="10dp"
         android:weightSum="1">
 
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/error_message"
+            android:gravity="center_vertical"
+            android:visibility="invisible"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:id="@+id/progressBar"
+            android:visibility="invisible"/>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/heading"
         android:layout_width="match_parent"
@@ -102,7 +126,8 @@
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            android:singleLine="true"/>
 
 
         <TextView
@@ -123,7 +148,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="2dp"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            android:singleLine="true"/>
 
         <TextView
             android:id="@+id/contact_text"
@@ -143,7 +169,8 @@
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            android:inputType="number"/>
 
         <TextView
             android:id="@+id/property_initials_text"

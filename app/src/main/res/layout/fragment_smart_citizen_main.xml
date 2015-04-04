@@ -160,9 +160,8 @@
 
                 <TextView
                     android:id="@+id/property_heading"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.5"
                     android:text="@string/my_property_header"
                     android:textColor="@color/smart_citizen_blue"
                     android:gravity="center_vertical"
@@ -184,7 +183,6 @@
                 android:layout_height="0dp"
                 android:layout_weight="0.52"
                 android:id="@+id/listview_properties"
-                android:divider="@null"
                 >
 
 

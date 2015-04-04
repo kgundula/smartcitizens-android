@@ -52,5 +52,8 @@
 
     <string name="prompt_password_confirm">Confirm Password</string>
     <string name="prompt_email_register">email@email.com</string>
+
+    <string name="content_authority">app.defensivethinking.co.za.smartcitizen</string>
+    <string name="sync_account_type">app.defensivethinking.co.za.smartcitizen</string>
     <!--<string name="error_field_required">This field is required</string>  -->
 </resources>

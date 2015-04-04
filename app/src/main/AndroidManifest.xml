@@ -75,7 +75,31 @@
 
         <provider
             android:name=".data.SmartCitizenProvider"
-            android:authorities="app.defensivethinking.co.za.smartcitizen" />
+            android:authorities="app.defensivethinking.co.za.smartcitizen"
+            android:exported="false"
+            android:syncable="true"
+            />
+
+        <service android:name=".sync.SmartCitizenAuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <service
+            android:name=".sync.SmartCitizenSyncService"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
 
 
     </application>

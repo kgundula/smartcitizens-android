@@ -1,6 +1,8 @@
 package app.defensivethinking.co.za.smartcitizen;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,6 +25,7 @@ import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.UserEn
 public class SmartCitizenMainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = SmartCitizenMainFragment.class.getSimpleName();
+    public Context context;
     private PropertyAdapter mPropertyAdapter;
 
     private ListView mListView;
@@ -49,10 +52,22 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     Cursor property_cursor, user_cursor;
 
     public static String property_owner = "";
+    public static String user_email = "";
+    private MyMainActivityInterface myMainActivityInterface;
+
     public SmartCitizenMainFragment() {
         setHasOptionsMenu(true);
     }
 
+    public interface MyMainActivityInterface {
+        public void MainActivityData (String user_email,String property_owner);
+    }
+
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        context = getActivity();
+        myMainActivityInterface =(MyMainActivityInterface)context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +81,9 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
 
         if ( user_cursor != null && user_cursor.moveToFirst() ) {
             property_owner = user_cursor.getString(0);
+            user_email  = user_cursor.getString(1);
             welcome_email_text.setText(user_cursor.getString(1));
+            myMainActivityInterface.MainActivityData(user_email,property_owner);
         }
 
         ImageView imgCaptureReading = (ImageView) rootView.findViewById(R.id.imgCaptureReading);
@@ -124,6 +141,8 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         if (savedInstanceState != null && savedInstanceState.containsKey(PROPERTY_SELECTED_KEY)) {
             mPosition = savedInstanceState.getInt(PROPERTY_SELECTED_KEY);
         }
+
+        user_cursor.close();
         return rootView;
     }
 
@@ -185,6 +204,8 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
 
     public void CaptureReading () {
         Intent intent = new Intent(getActivity(), CaptureReadingActivity.class);
+        intent.putExtra("user_email", user_email);
+        intent.putExtra("property_owner", property_owner);
         startActivity(intent);
 
     }

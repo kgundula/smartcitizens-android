@@ -9,10 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class SmartCitizenMainActivity extends ActionBarActivity {
+public class SmartCitizenMainActivity extends ActionBarActivity implements SmartCitizenMainFragment.MyMainActivityInterface {
 
     private final String LOG_TAG = SmartCitizenMainActivity.class.getSimpleName();
-
+    public static String user_email , property_owner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +26,11 @@ public class SmartCitizenMainActivity extends ActionBarActivity {
                     .add(R.id.fragment_main , fragment).commit();
        // }
 
+    }
+
+    public void MainActivityData (String u_email , String p_owner) {
+        user_email = u_email;
+        property_owner = p_owner;
     }
 
     @Override
@@ -73,6 +78,8 @@ public class SmartCitizenMainActivity extends ActionBarActivity {
 
     public void CaptureReading () {
         Intent intent = new Intent(this, CaptureReadingActivity.class);
+        intent.putExtra("user_email", user_email);
+        intent.putExtra("property_owner", property_owner);
         startActivity(intent);
 
     }
@@ -84,7 +91,8 @@ public class SmartCitizenMainActivity extends ActionBarActivity {
 
     public void Property() {
         Intent intent = new Intent(this, PropertyActivity.class);
-        //intent.putExtra("user_id", property_owner);
+        intent.putExtra("user_email", user_email);
+        intent.putExtra("property_owner", property_owner);
         startActivity(intent);
     }
 
