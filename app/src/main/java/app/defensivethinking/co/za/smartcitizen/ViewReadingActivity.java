@@ -192,9 +192,9 @@ public class ViewReadingActivity extends ActionBarActivity {
 
     public void getMeterReading(String account_id) {
 
-        Log.i("propetery id", account_id );
+        Log.i("account id", account_id );
         final String[] METER_PROJECTION = new String[] {
-                SmartCitizenContract.MeterReading.COLUMN_METER_ID,
+
                 SmartCitizenContract.MeterReading.COLUMN_METER_ACCOUNT_NUMBER,
                 SmartCitizenContract.MeterReading.COLUMN_METER_ELECTRICITY,
                 SmartCitizenContract.MeterReading.COLUMN_METER_WATER,
@@ -214,5 +214,8 @@ public class ViewReadingActivity extends ActionBarActivity {
 
             } while (meter_cursor.moveToNext());
         }
+
+        meter_cursor.close();
+
     }
 }

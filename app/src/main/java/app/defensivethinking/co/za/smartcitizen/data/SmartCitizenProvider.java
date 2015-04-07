@@ -288,6 +288,10 @@ public class SmartCitizenProvider extends ContentProvider {
                 updated = db.update(SmartCitizenContract.PropertyEntry.TABLE_NAME,values,selection,selectionArgs);
                 break;
             }
+            case METER: {
+                updated = db.update(SmartCitizenContract.MeterReading.TABLE_NAME,values,selection,selectionArgs);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

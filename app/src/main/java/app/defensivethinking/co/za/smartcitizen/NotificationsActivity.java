@@ -12,5 +12,7 @@ public class NotificationsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_notifications);
     }
 
+    public void getNotification () {
 
+    }
 }

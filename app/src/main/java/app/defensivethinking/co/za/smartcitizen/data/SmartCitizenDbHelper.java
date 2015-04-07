@@ -57,6 +57,7 @@ public class SmartCitizenDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_METER_TABLE = "CREATE TABLE " + MeterReading.TABLE_NAME +" ( " +
                 MeterReading._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                MeterReading.COLUMN_METER_ID + " TEXT NOT NULL, " +
                 MeterReading.COLUMN_METER_ACCOUNT_NUMBER + " TEXT NOT NULL, "+
                 MeterReading.COLUMN_METER_ELECTRICITY + " TEXT NOT NULL, "+
                 MeterReading.COLUMN_METER_WATER + " TEXT NOT NULL, "+

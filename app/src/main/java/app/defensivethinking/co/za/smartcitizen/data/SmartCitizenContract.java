@@ -94,12 +94,14 @@ public class SmartCitizenContract {
     public static final class MeterReading implements BaseColumns {
 
         public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_PROPERTY).build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_METER_READING).build();
 
         public static final String CONTENT_TYPE =
                 "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_METER_READING;
         public static final String CONTENT_ITEM_TYPE =
                 "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_METER_READING;
+
+        public static final String TABLE_NAME = "meter_reading";
 
         public static final String COLUMN_METER_ID                      = "meter_id";
         public static final String COLUMN_METER_READING_DATE            = "meter_reading_date";
@@ -110,8 +112,6 @@ public class SmartCitizenContract {
         public static Uri buildMeterUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-
-        public static final String TABLE_NAME = "meter_reading";
 
         public static final String getMeterReadingByAccId ( Uri uri) {
             return uri.getQueryParameter(COLUMN_METER_ACCOUNT_NUMBER);
