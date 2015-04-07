@@ -23,6 +23,10 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 
+        final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+        final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties";
+
+        
     }
 
     @Override

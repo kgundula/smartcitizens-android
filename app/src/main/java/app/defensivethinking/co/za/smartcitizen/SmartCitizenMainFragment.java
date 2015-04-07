@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,12 +81,13 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         View rootView = inflater.inflate(R.layout.fragment_smart_citizen_main, container, false);
         TextView welcome_email_text = (TextView) rootView.findViewById(R.id.welcome_email_text);
 
-        String email_address = getUsername();
-
+        final String email_address = getUsername();
+        Log.i("Email ", email_address);
         String userSelection = "(" + UserEntry.COLUMN_USER_EMAIL + " = ? )";
         String[] userSelectAgs = new String[] {email_address};
 
         user_cursor =  getActivity().getContentResolver().query(UserEntry.CONTENT_URI , USER_PROJECTION, userSelection, userSelectAgs, null);
+        //Log.i("User Log", DatabaseUtils.dumpCursorToString(user_cursor));
 
         if ( user_cursor != null && user_cursor.moveToFirst() ) {
             property_owner = user_cursor.getString(0);
@@ -180,12 +182,15 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         String sortOrder = PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER + " ASC";
 
         Uri property_uri = PropertyEntry.CONTENT_URI;
+        String propertySelection = "(" + PropertyEntry.COLUMN_PROPERTY_OWNER + " = ? )";
+        String[] propertySelectAgs = new String[] {property_owner};
+
         return new CursorLoader(
                 getActivity(),
                 property_uri,
                 PROJECTION,
-                null,
-                null,
+                propertySelection,
+                propertySelectAgs,
                 sortOrder
         );
     }

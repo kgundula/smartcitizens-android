@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.UserEntry;
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.PropertyEntry;
+import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.MeterReading;
 
 /**
  * Created by Profusion on 2015-03-05.
@@ -54,14 +55,25 @@ public class SmartCitizenDbHelper extends SQLiteOpenHelper {
                 " UNIQUE (  "+ PropertyEntry.COLUMN_PROPERTY_ID + " , " + PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER +" ) ON CONFLICT IGNORE"+
                 " ); ";
 
+        final String SQL_CREATE_METER_TABLE = "CREATE TABLE " + MeterReading.TABLE_NAME +" ( " +
+                MeterReading._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                MeterReading.COLUMN_METER_ACCOUNT_NUMBER + " TEXT NOT NULL, "+
+                MeterReading.COLUMN_METER_ELECTRICITY + " TEXT NOT NULL, "+
+                MeterReading.COLUMN_METER_WATER + " TEXT NOT NULL, "+
+                MeterReading.COLUMN_METER_READING_DATE + " TEXT NOT NULL, "+
+                " FOREIGN KEY ( " + MeterReading.COLUMN_METER_ACCOUNT_NUMBER+ " ) REFERENCES " +
+                PropertyEntry.TABLE_NAME + " ( "+ PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER + " ) ); ";
+
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROPERTY_TABLE);
+        db.execSQL(SQL_CREATE_METER_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+UserEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+PropertyEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+MeterReading.TABLE_NAME);
         onCreate(db);
     }
 }

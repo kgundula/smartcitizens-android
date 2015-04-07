@@ -479,7 +479,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 Uri builtUri = Uri.parse(SMART_CITIZEN_URL).buildUpon()
 
                         .build();
-                Log.i("url", builtUri.toString());
+
                 if(utility.cookieManager == null)
                     utility.cookieManager = new CookieManager();
                 CookieHandler.setDefault(utility.cookieManager);
@@ -543,7 +543,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 }
             }
 
-            Log.i("User ",userJsonStr);
+           // Log.i("User ",userJsonStr);
 
             return userJsonStr;
         }
@@ -567,14 +567,16 @@ public class SmartCitizenLoginActivity extends Activity  {
                     error_message.invalidate();
 
                 }
-                else {
+                else
+                {
+                    //getUserDataFromJson(userJsonStr);
                     savePassword(mPassword);
                     saveUsername(mUsername);
                     Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
                     startActivity(intent);
                     finish();
                 }
-                //getUserDataFromJson(userJsonStr);
+
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();

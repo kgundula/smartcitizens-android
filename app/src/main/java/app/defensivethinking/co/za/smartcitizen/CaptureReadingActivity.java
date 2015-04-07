@@ -1,11 +1,13 @@
 package app.defensivethinking.co.za.smartcitizen;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -72,6 +74,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
     private static final String contact = "";
     private static final String email = "";
 
+    public static String property_owner = "";
 
     static int REQUEST_WATER_IMAGE_CAPTURE = 1;
     static int REQUEST_ELECTRICITY_IMAGE_CAPTURE = 1;
@@ -110,8 +113,22 @@ public class CaptureReadingActivity extends ActionBarActivity {
         acc_date.setText(today);
         Uri properties = SmartCitizenContract.PropertyEntry.CONTENT_URI;
 
-        property_cursor = getContentResolver().query(properties, PROPERTY_PROJECTION, null, null, null);
-        user_cursor = getContentResolver().query(SmartCitizenContract.UserEntry.CONTENT_URI, USER_PROJECTION, null, null, null );
+
+        final String email_address = getUsername();
+        Log.i("Email ", email_address);
+        String userSelection = "(" + SmartCitizenContract.UserEntry.COLUMN_USER_EMAIL + " = ? )";
+        String[] userSelectAgs = new String[] {email_address};
+
+        user_cursor =  getContentResolver().query(SmartCitizenContract.UserEntry.CONTENT_URI , USER_PROJECTION, userSelection, userSelectAgs, null);
+        if (user_cursor != null && user_cursor.moveToFirst()) {
+            property_owner = user_cursor.getString(0);
+            Log.i("User", DatabaseUtils.dumpCursorToString(user_cursor));
+            //acc_name.setText();
+        }
+        String propertySelection = "(" + SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_OWNER + " = ? )";
+        String[] propertySelectAgs = new String[] {property_owner};
+
+        property_cursor = getContentResolver().query(properties, PROPERTY_PROJECTION, propertySelection, propertySelectAgs, null);
 
         final List<String> accountNameList = new ArrayList<String>();
         final List<String> accountIdList = new ArrayList<String>();
@@ -120,9 +137,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
             do {
                 accountNameList.add(property_cursor.getString(3));
-                //Log.i("_ID",property_cursor.getString(0));
                 accountIdList.add(property_cursor.getString(0));
-
             } while (property_cursor.moveToNext());
 
         }
@@ -139,7 +154,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
                         int position = acc_name.getSelectedItemPosition();
 
                         String  _ID = accountIdList.get(position);
-                        Log.i("_ID", ""+_ID);
                         if ( property_cursor.moveToFirst()) {
                             do {
 
@@ -156,6 +170,8 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
                             } while (property_cursor.moveToNext());
                         }
+
+
                     }
 
                     @Override
@@ -167,10 +183,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
         /*
 
          */
-        if (user_cursor != null && user_cursor.moveToFirst()) {
-            Log.i("User", DatabaseUtils.dumpCursorToString(user_cursor));
-            //acc_name.setText();
-        }
+
         Button electricity_reading_evidence = (Button) findViewById(R.id.electricity_reading_evidence);
         electricity_reading_evidence.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,7 +348,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
 
-        Log.i("Reading", readings.toString());
+        //Log.i("Reading", readings.toString());
 
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL,readings, new Response.Listener<JSONObject>() {
             @Override
@@ -356,6 +369,12 @@ public class CaptureReadingActivity extends ActionBarActivity {
         });
 
         rq.add(propertyRequest);
-
     }
+
+    public String getUsername() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String username = settings.getString("username", "");
+        return username;
+    }
+
 }

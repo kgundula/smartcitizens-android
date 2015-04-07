@@ -21,6 +21,8 @@ public class SmartCitizenProvider extends ContentProvider {
 
     private static final int USER = 100;
     private static final int USER_ID = 101;
+    private static final int METER = 200;
+    private static final int METER_ID = 201;
     private static final int PROPERTY = 300;
     private static final int PROPERTY_ID = 301;
 
@@ -76,6 +78,8 @@ public class SmartCitizenProvider extends ContentProvider {
         matcher.addURI(authority, SmartCitizenContract.PATH_USER +"/#", USER_ID);
         matcher.addURI(authority, SmartCitizenContract.PATH_PROPERTY, PROPERTY);
         matcher.addURI(authority, SmartCitizenContract.PATH_PROPERTY +"/#", PROPERTY_ID);
+        matcher.addURI(authority, SmartCitizenContract.PATH_METER_READING, METER);
+        matcher.addURI(authority, SmartCitizenContract.PATH_METER_READING +"/#", METER_ID);
 
         return matcher;
     }
@@ -89,7 +93,7 @@ public class SmartCitizenProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor smartCursor;
-        Log.i("my uri", uri.toString());
+        //Log.i("my uri", uri.toString());
         switch (sUriMatcher.match(uri)) {
 
             case USER:{
@@ -128,7 +132,6 @@ public class SmartCitizenProvider extends ContentProvider {
                         sortOrder
                 );
 
-                Log.i("Cursor", "Riley was her");
                 break;
             }
             case PROPERTY_ID: {
@@ -136,6 +139,30 @@ public class SmartCitizenProvider extends ContentProvider {
                         SmartCitizenContract.PropertyEntry.TABLE_NAME,
                         projection,
                         SmartCitizenContract.PropertyEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
+                        null,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            case METER : {
+                smartCursor = mOpenHelper.getReadableDatabase().query(
+                        SmartCitizenContract.MeterReading.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            case METER_ID: {
+                smartCursor = mOpenHelper.getReadableDatabase().query(
+                        SmartCitizenContract.MeterReading.TABLE_NAME,
+                        projection,
+                        SmartCitizenContract.MeterReading._ID + " = '" + ContentUris.parseId(uri) + "'",
                         null,
                         null,
                         null,
@@ -164,6 +191,10 @@ public class SmartCitizenProvider extends ContentProvider {
                 return SmartCitizenContract.PropertyEntry.CONTENT_TYPE;
             case PROPERTY_ID :
                 return SmartCitizenContract.PropertyEntry.CONTENT_ITEM_TYPE;
+            case METER:
+                return SmartCitizenContract.MeterReading.CONTENT_TYPE;
+            case METER_ID:
+                return SmartCitizenContract.MeterReading.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -196,6 +227,15 @@ public class SmartCitizenProvider extends ContentProvider {
 
                 break;
             }
+            case METER: {
+                long _id = db.insert(SmartCitizenContract.MeterReading.TABLE_NAME, null, values);
+                if (_id > 0)
+                    smartUri = SmartCitizenContract.MeterReading.buildMeterUri(_id);
+                else
+                    throw new SQLException("Failed to insert new row into :"+uri);
+                break;
+            }
+
             default:
                 throw new UnsupportedOperationException("Unknown Uri" + uri);
         }
@@ -217,6 +257,9 @@ public class SmartCitizenProvider extends ContentProvider {
                 break;
             case PROPERTY:
                 deleted = db.delete(SmartCitizenContract.PropertyEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case METER:
+                deleted = db.delete(SmartCitizenContract.MeterReading.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri:" + uri);
@@ -278,6 +321,23 @@ public class SmartCitizenProvider extends ContentProvider {
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
                 return count;
+            case METER:
+                db.beginTransaction();
+                int my_count = 0;
+                try {
+                    for (ContentValues value : values) {
+
+                        long _id = db.insert(SmartCitizenContract.MeterReading.TABLE_NAME, null, value);
+                        if ( _id != -1) {
+                            my_count++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return my_count;
             default:
                 return super.bulkInsert(uri,values);
         }

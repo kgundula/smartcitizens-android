@@ -26,7 +26,11 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
+import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
 
 public class PropertyActivity extends ActionBarActivity {
@@ -124,6 +128,10 @@ public class PropertyActivity extends ActionBarActivity {
 
     public void addProperty(String portion, String bp, String initials, String surname, String contact, String address, String account) {
 
+        if(utility.cookieManager == null)
+            utility.cookieManager = new CookieManager();
+        CookieHandler.setDefault(utility.cookieManager);
+
         RequestQueue rq = Volley.newRequestQueue(this);
 
         JSONObject property = new JSONObject();
@@ -147,7 +155,6 @@ public class PropertyActivity extends ActionBarActivity {
 
         Log.i("Url ", SMART_CITIZEN_URL);
         progressBar.setVisibility(View.VISIBLE);
-        //progressBar.invalidate();
 
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL, property , new Response.Listener<JSONObject>() {
             @Override
