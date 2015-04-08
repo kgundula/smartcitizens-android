@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.android.volley.RequestQueue;
@@ -53,11 +54,21 @@ public class ViewReadingActivity extends ActionBarActivity {
     Spinner acc_name;
     public static String property_owner = "";
     public static String user_email = "";
+    ListView mListView;
+
+
+    private ReadingsAdapter mReadingsAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_reading);
+
+        mListView = (ListView) findViewById(R.id.listview_readings);
+        mReadingsAdapter = new ReadingsAdapter(getApplicationContext(),null, 0);
+
+        mListView.setAdapter(mReadingsAdapter);
 
         String email_address = getUsername();
         String userSelection = "(" + UserEntry.COLUMN_USER_EMAIL + " = ? )";
@@ -93,7 +104,6 @@ public class ViewReadingActivity extends ActionBarActivity {
         }
 
         user_cursor.close();
-        //property_cursor.close();
 
         ArrayAdapter<String> adapter =new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,accountNameList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
