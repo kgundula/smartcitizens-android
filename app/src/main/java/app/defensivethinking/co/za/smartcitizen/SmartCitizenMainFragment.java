@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,12 +81,11 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         TextView welcome_email_text = (TextView) rootView.findViewById(R.id.welcome_email_text);
 
         final String email_address = getUsername();
-        Log.i("Email ", email_address);
+
         String userSelection = "(" + UserEntry.COLUMN_USER_EMAIL + " = ? )";
         String[] userSelectAgs = new String[] {email_address};
 
         user_cursor =  getActivity().getContentResolver().query(UserEntry.CONTENT_URI , USER_PROJECTION, userSelection, userSelectAgs, null);
-        //Log.i("User Log", DatabaseUtils.dumpCursorToString(user_cursor));
 
         if ( user_cursor != null && user_cursor.moveToFirst() ) {
             property_owner = user_cursor.getString(0);
@@ -153,7 +151,6 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         }
 
         user_cursor.close();
-        //property_cursor.close();
         return rootView;
     }
 
@@ -167,6 +164,11 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     public void onResume() {
         super.onResume();
         getLoaderManager().restartLoader(PROPERTY_LOADER, null, this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override

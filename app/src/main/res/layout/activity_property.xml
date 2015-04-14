@@ -82,7 +82,8 @@
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            android:singleLine="true"/>
 
         <TextView
             android:id="@+id/property_account_no_text"
@@ -105,7 +106,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
             android:textColor="@color/smart_citizen_text_color"
-            android:inputType="number"/>
+            android:inputType="number"
+            android:singleLine="true"/>
 
 
         <TextView
@@ -170,7 +172,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
             android:textColor="@color/smart_citizen_text_color"
-            android:inputType="number"/>
+            android:inputType="number"
+            android:singleLine="true"/>
 
         <TextView
             android:id="@+id/property_initials_text"
@@ -190,7 +193,8 @@
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="2dp"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            android:singleLine="true"/>
 
     <TextView
         android:id="@+id/property_surname_text"
@@ -210,7 +214,9 @@
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="2dp"
-        android:textColor="@color/smart_citizen_text_color"/>
+        android:textColor="@color/smart_citizen_text_color"
+        android:inputType="text"
+        android:singleLine="true"/>
 
     <Button
         android:id="@+id/submit_property"

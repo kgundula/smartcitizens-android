@@ -415,6 +415,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 showProgress(false);
             }
 
+            TextView error_message = (TextView) findViewById(R.id.error_message);
             if (success) {
 
                 savePassword(mPassword);
@@ -423,8 +424,11 @@ public class SmartCitizenLoginActivity extends Activity  {
                 finish();
 
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+               error_message.setText(getString(R.string.error_incorrect_password));
+                error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+                error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+                error_message.setVisibility(View.VISIBLE);
+                error_message.invalidate();
             }
         }
 
@@ -569,7 +573,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 }
                 else
                 {
-                    //getUserDataFromJson(userJsonStr);
+
                     savePassword(mPassword);
                     saveUsername(mUsername);
                     Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
@@ -652,7 +656,6 @@ public class SmartCitizenLoginActivity extends Activity  {
 
                 cVVector.add(propertyValues);
 
-                //Log.i("property", property.toString());
             }
 
 

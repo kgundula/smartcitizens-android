@@ -312,9 +312,7 @@ public class SmartCitizenProvider extends ContentProvider {
                 int count = 0;
                 try {
                     for (ContentValues value : values) {
-                        Log.i("value", value.toString());
                         long _id = db.insert(SmartCitizenContract.PropertyEntry.TABLE_NAME, null, value);
-                        Log.i("my id ", String.valueOf(_id) );
                         if ( _id != -1) {
                             count++;
                         }
@@ -330,8 +328,9 @@ public class SmartCitizenProvider extends ContentProvider {
                 int my_count = 0;
                 try {
                     for (ContentValues value : values) {
-
+                        Log.i("value", value.toString());
                         long _id = db.insert(SmartCitizenContract.MeterReading.TABLE_NAME, null, value);
+                        Log.i("my id ", String.valueOf(_id) );
                         if ( _id != -1) {
                             my_count++;
                         }

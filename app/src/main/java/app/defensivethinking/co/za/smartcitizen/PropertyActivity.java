@@ -1,6 +1,7 @@
 package app.defensivethinking.co.za.smartcitizen;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -42,11 +44,13 @@ public class PropertyActivity extends ActionBarActivity {
     String owner, email;
     static TextView error_message;
     static ProgressBar progressBar;
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_property);
-
+        context = getApplicationContext();
         Bundle extras = getIntent().getExtras();
         if ( extras != null) {
             email = extras.getString("user_email");
@@ -152,8 +156,6 @@ public class PropertyActivity extends ActionBarActivity {
 
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties";
-
-        Log.i("Url ", SMART_CITIZEN_URL);
         progressBar.setVisibility(View.VISIBLE);
 
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL, property , new Response.Listener<JSONObject>() {
@@ -169,8 +171,9 @@ public class PropertyActivity extends ActionBarActivity {
                     String message = "";
                     if ( success ) {
                         message = "Property Added Successfully";
-                        JSONObject myProperty = new JSONObject("property");
+                        JSONObject myProperty = jsonObject.getJSONObject("property");
 
+                        Toast.makeText(context, "Property Added Successfully", Toast.LENGTH_LONG).show();
 
                         String _id = myProperty.getString("_id");
                         String contact_tel = myProperty.getString("contacttel");
@@ -209,7 +212,7 @@ public class PropertyActivity extends ActionBarActivity {
                     else {
                         message = jsonObject.getString("error");
                     }
-
+                    progressBar.setVisibility(View.INVISIBLE);
                     error_message.setText(message);
                     error_message.setVisibility(View.VISIBLE);
                     error_message.invalidate();

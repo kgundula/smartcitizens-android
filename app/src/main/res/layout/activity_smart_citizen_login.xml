@@ -21,6 +21,12 @@
         android:src="@mipmap/ic_launcher"
         />
 
+    <TextView
+        android:id="@+id/error_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_gravity="center_vertical"/>
 
     <ScrollView
         android:id="@+id/login_form"
@@ -108,13 +114,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
-            <TextView
-                android:id="@+id/error_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
 
-                />
             <EditText
                 android:id="@+id/register_email"
                 android:layout_width="match_parent"

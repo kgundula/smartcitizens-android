@@ -63,7 +63,9 @@ public class SmartCitizenDbHelper extends SQLiteOpenHelper {
                 MeterReading.COLUMN_METER_WATER + " TEXT NOT NULL, "+
                 MeterReading.COLUMN_METER_READING_DATE + " TEXT NOT NULL, "+
                 " FOREIGN KEY ( " + MeterReading.COLUMN_METER_ACCOUNT_NUMBER+ " ) REFERENCES " +
-                PropertyEntry.TABLE_NAME + " ( "+ PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER + " ) ); ";
+                PropertyEntry.TABLE_NAME + " ( "+ PropertyEntry.COLUMN_PROPERTY_ACCOUNT_NUMBER + " )" +
+                " UNIQUE (  "+ MeterReading.COLUMN_METER_ID + " ) ON CONFLICT IGNORE " +
+                " ); ";
 
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROPERTY_TABLE);

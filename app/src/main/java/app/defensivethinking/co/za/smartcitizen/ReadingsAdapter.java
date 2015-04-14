@@ -50,10 +50,11 @@ public class ReadingsAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        String accountNumber = "";
-        String readingsDate = "";
-        String waterReading = "";
-        String electricityReading = "";
+        String accountNumber = cursor.getString(1);
+        String electricityReading = cursor.getString(2);
+        String waterReading = cursor.getString(2);
+        //String reading_date  = cursor.getString(4);
+        String readingsDate = cursor.getString(4); // utility.getDbDateString(cursor.getString(4));
 
         viewHolder.account_numberView.setText(accountNumber);
         viewHolder.reading_dateView.setText(readingsDate);

@@ -34,6 +34,7 @@
     <string name="third_heading">Provide a picture of your meter readings [optional]</string>
     <string name="water_reading_evidence">Water Meter Readings Evidence</string>
     <string name="electricity_reading_evidence">Electricity Meter Readings Evidence</string>
+    <string name="error_reading_less">Meter reading needs to be higher than the previous reading</string>
 
     <string name="water_evidence">Take Picture</string>
     <string name="electricity_evidence">Take Picture</string>
