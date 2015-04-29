@@ -432,6 +432,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
             readings.put("water", water_reading);
             readings.put("electricity", electricity_reading);
             readings.put("readingDate", date);
+            readings.put("username", getUsername());
 
         } catch (Exception e) {
             e.printStackTrace();

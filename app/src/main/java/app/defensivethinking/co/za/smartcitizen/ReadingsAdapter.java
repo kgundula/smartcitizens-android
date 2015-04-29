@@ -53,7 +53,6 @@ public class ReadingsAdapter extends CursorAdapter {
         String accountNumber = cursor.getString(1);
         String electricityReading = cursor.getString(2);
         String waterReading = cursor.getString(3);
-        //String reading_date  = cursor.getString(4);
         String readingsDate = cursor.getString(4); // utility.getDbDateString(cursor.getString(4));
 
         viewHolder.account_numberView.setText(accountNumber);
