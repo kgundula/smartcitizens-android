@@ -86,6 +86,8 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
 
     public void ViewReading() {
         Intent intent = new Intent(this, ViewReadingActivity.class);
+        intent.putExtra("user_email", user_email);
+        intent.putExtra("property_owner", property_owner);
         startActivity(intent);
     }
 

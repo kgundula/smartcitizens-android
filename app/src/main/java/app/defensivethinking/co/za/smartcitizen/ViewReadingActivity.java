@@ -3,7 +3,6 @@ package app.defensivethinking.co.za.smartcitizen;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -124,6 +124,12 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
                 accountIdList.add(property_cursor.getString(0));
             } while (property_cursor.moveToNext());
         }
+        else {
+            TextView no_properties = (TextView) findViewById(R.id.no_properties);
+            no_properties.setText("You have no meter readings");
+            View view_reading_layout = findViewById(R.id.view_reading_layout);
+            view_reading_layout.setVisibility(View.INVISIBLE);
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,accountNameList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -169,20 +175,20 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
         RequestQueue rq = Volley.newRequestQueue(this);
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
-        //Log.i("url" , SMART_CITIZEN_URL);
+
         JsonArrayRequest propertyRequest = new JsonArrayRequest( SMART_CITIZEN_URL,  new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
                 try {
-
+                    Log.i("Response",response.toString());
                     Vector<ContentValues> cVVector = new Vector<ContentValues>(response.length());
                     for  ( int  i = 0; i < response.length(); i++) {
 
                         JSONObject meter_reading = (JSONObject) response.get(i);
 
                         if( meter_reading.has("account") && meter_reading.has("electricity")) {
-                            Log.i("Readings", ""+meter_reading.toString());
+                            //wLog.i("Readings", ""+meter_reading.toString());
 
                             String account_no = meter_reading.getString("account");
                             String water_reading = meter_reading.getString("water");
@@ -281,7 +287,6 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
         if (id != 0) {
             String meterSelection = "(" + SmartCitizenContract.MeterReading.COLUMN_METER_ACCOUNT_NUMBER + " = ? )";
             String[] meterSelectAgs = new String[] {""+this.account_id};
-            //String sortOder = " "+ SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE+" ASC ";
             return new CursorLoader(
                     this,
                     meter_uri,
@@ -306,12 +311,11 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        Log.i("meter cursor", DatabaseUtils.dumpCursorToString(data));
-
         mReadingsAdapter.swapCursor(data);
         if (mPosition != ListView.INVALID_POSITION) {
             mListView.smoothScrollToPosition(mPosition);
         }
+        mListView.setVisibility(View.VISIBLE);
     }
 
     @Override

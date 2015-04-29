@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center_vertical"
+      android:minHeight="?android:attr/listPreferredItemHeight"
+      android:padding="10dp"
+      android:elevation="2dp"
+      android:background="@color/white">
+
+    <TextView
+        android:id="@+id/account_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/property_name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/text_color"/>
+
+    <TextView
+        android:id="@+id/physical_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/property_address"
+        android:textColor="@color/text_color"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>

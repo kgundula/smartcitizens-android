@@ -1,0 +1,8 @@
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@+id/fragment_main"
+          android:name="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainFragment"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          tools:context="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainFragment"
+          tools:layout="@layout/fragment_smart_citizen_main"/>

@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,7 +107,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
     EditText acc_water_reading, acc_electricity_reading, acc_surname, acc_address,
             acc_contact, acc_email , acc_bp , acc_portion, acc_date;
     Cursor property_cursor,user_cursor;
-
+    static ProgressBar progressBar;
     Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,11 +133,14 @@ public class CaptureReadingActivity extends ActionBarActivity {
         acc_portion = (EditText) findViewById(R.id.portion);
         acc_date = (EditText) findViewById(R.id.date);
         error_message = (TextView) findViewById(R.id.error_message);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         final Date date = new Date();
         String today = utility.getDbDateString(date);
 
         acc_date.setText(today);
         Uri properties = SmartCitizenContract.PropertyEntry.CONTENT_URI;
+
 
 
         final String email_address = getUsername();
@@ -156,6 +160,8 @@ public class CaptureReadingActivity extends ActionBarActivity {
         final List<String> accountNameList = new ArrayList<String>();
         final List<String> accountIdList = new ArrayList<String>();
 
+        TextView no_properties = (TextView) findViewById(R.id.no_properties);
+
         if ( property_cursor.moveToFirst()){
 
             do {
@@ -163,6 +169,13 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 accountIdList.add(property_cursor.getString(0));
             } while (property_cursor.moveToNext());
 
+            no_properties.setVisibility(View.GONE);
+        }
+        else
+        {
+            no_properties.setText("Your have no properties yet, Please add a property");
+            View capture_reading_layout = findViewById(R.id.capture_reading_layout);
+            capture_reading_layout.setVisibility(View.INVISIBLE);
         }
 
 
@@ -188,21 +201,37 @@ public class CaptureReadingActivity extends ActionBarActivity {
                                     String sortOrder = SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE + " DESC";
 
                                     String meterSelection = "(" + SmartCitizenContract.MeterReading.COLUMN_METER_ACCOUNT_NUMBER + " = ? )";
-                                    String[] meterSelectAgs = new String[] {property_cursor.getString(3)};
+                                    String[] meterSelectAgs = new String[]{property_cursor.getString(3)};
 
-                                    Cursor meter_reading = getContentResolver().query(meter_uri, METER_READING_PROJECTION, meterSelection , meterSelectAgs, sortOrder);
-                                    if ( meter_reading != null && meter_reading.moveToFirst() ) {
+                                    Cursor meter_reading = getContentResolver().query(meter_uri, METER_READING_PROJECTION, meterSelection, meterSelectAgs, sortOrder);
+                                    if (meter_reading != null && meter_reading.moveToFirst()) {
                                         previous_electricity_reading = meter_reading.getString(1);
-                                        previous_water_reading       = meter_reading.getString(2);
+                                        previous_water_reading = meter_reading.getString(2);
 
-                                        acc_electricity_reading.setText(meter_reading.getString(1));
-                                        acc_water_reading.setText(meter_reading.getString(2));
-                                    }
-                                    else {
+                                        meter_reading.close();
+                                    } else {
                                         previous_electricity_reading = "0";
                                         previous_water_reading = "0";
                                     }
-                                    meter_reading.close();
+
+                                    if (Integer.parseInt(previous_electricity_reading) == 0)
+                                    {
+                                        acc_electricity_reading.setText("");
+                                    }
+                                    else
+                                    {
+                                        acc_electricity_reading.setText(previous_electricity_reading);
+                                    }
+
+
+                                    if ( Integer.parseInt(previous_electricity_reading) == 0 )
+                                    {
+                                        acc_water_reading.setText("");
+                                    } else
+                                    {
+                                        acc_water_reading.setText(previous_water_reading);
+                                    }
+
 
                                     acc_contact.setText(property_cursor.getString(1));
                                     acc_portion.setText(property_cursor.getString(2));
@@ -266,6 +295,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 my_acc_date                 = acc_date.getText().toString().trim();
                 meter_water_reading         = acc_water_reading.getText().toString().trim();
                 meter_electricity_reading   = acc_electricity_reading.getText().toString().trim();
+               // Log.i("Meter E", meter_electricity_reading);
 
                 if (TextUtils.isEmpty(surname)) {
                     acc_surname.setError(getString(R.string.error_field_required));
@@ -316,16 +346,23 @@ public class CaptureReadingActivity extends ActionBarActivity {
                     cancel = true;
                 }
 
-                if ( Integer.parseInt(previous_electricity_reading) >= Integer.parseInt(meter_electricity_reading) ) {
-                    acc_electricity_reading.setError(getString(R.string.error_reading_less));
-                    focusView = acc_electricity_reading;
-                    cancel = true;
+                if (meter_electricity_reading != null && !TextUtils.isEmpty(meter_electricity_reading)) {
+                    if ( Integer.parseInt(previous_electricity_reading) >= Integer.parseInt(meter_electricity_reading) ) {
+                        acc_electricity_reading.setError(getString(R.string.error_reading_less));
+                        focusView = acc_electricity_reading;
+                        cancel = true;
+                    }
                 }
 
-                if ( Integer.parseInt(previous_water_reading) >= Integer.parseInt(meter_water_reading) ) {
-                    acc_water_reading.setError(getString(R.string.error_reading_less));
-                    focusView = acc_water_reading;
-                    cancel = true;
+
+
+                if (meter_water_reading != null && !TextUtils.isEmpty(meter_water_reading)) {
+
+                    if (Integer.parseInt(previous_water_reading) >= Integer.parseInt(meter_water_reading)) {
+                        acc_water_reading.setError(getString(R.string.error_reading_less));
+                        focusView = acc_water_reading;
+                        cancel = true;
+                    }
                 }
 
                 if (cancel) {
@@ -399,20 +436,21 @@ public class CaptureReadingActivity extends ActionBarActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        //progressBar.setVisibility(View.VISIBLE);
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
-
+        //Log.i()
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL,readings, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-
-                Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
-
-                error_message.setText("Reading Captured");
-                error_message.setVisibility(View.VISIBLE);
                 try {
                     Log.i("Capture", jsonObject.toString());
+                    Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
+
+                    //progressBar.setVisibility(View.INVISIBLE);
+                    error_message.setText("Reading Captured");
+                    error_message.setVisibility(View.VISIBLE);
+                    error_message.invalidate();
                 } catch (Exception ex ) {
                     ex.printStackTrace();
                 }
@@ -436,6 +474,10 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 } else if( error instanceof TimeoutError) {
                     error_msg = error.getMessage();
                 }
+                //progressBar.setVisibility(View.INVISIBLE);
+                error_message.setText(error_msg);
+                error_message.setVisibility(View.VISIBLE);
+                error_message.invalidate();
             }
         });
 

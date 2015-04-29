@@ -2,6 +2,7 @@ package app.defensivethinking.co.za.smartcitizen;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -39,6 +40,8 @@ public class NotificationsActivity extends ActionBarActivity {
             email = extras.getString("user_email");
             owner = extras.getString("property_owner");
         }
+
+        getNotification();
     }
 
     public void getNotification () {
@@ -56,10 +59,10 @@ public class NotificationsActivity extends ActionBarActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.GET, SMART_CITIZEN_URL,notification, new Response.Listener<JSONObject>() {
+        JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.GET, SMART_CITIZEN_URL,null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-
+                Log.i("Notifications", jsonObject.toString());
             }
         }
         , new Response.ErrorListener() {
@@ -80,9 +83,9 @@ public class NotificationsActivity extends ActionBarActivity {
                     error_msg = error.getMessage();
                 }
 
-
-
             }
         });
+
+        rq.add(propertyRequest);
     }
 }

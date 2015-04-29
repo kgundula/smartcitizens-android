@@ -29,10 +29,10 @@
             android:id="@+id/electricity_reading"/>
 
         <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.25"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/reading_date"/>
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/reading_date"/>
 
 </LinearLayout>

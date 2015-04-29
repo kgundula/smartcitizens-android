@@ -445,7 +445,7 @@ public class SmartCitizenLoginActivity extends Activity  {
         private final String mPassword;
         private final String mUsername;
 
-        UserRegisterTask(String email, String username ,String password) {
+        UserRegisterTask(String email, String username, String password) {
             mEmail = email;
             mPassword = password;
             mUsername = username;
@@ -474,8 +474,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                     user_reg.put(USERNAME_PARAM, mUsername);
                     user_reg.put(PASSWORD_PARAM, mPassword);
 
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -484,7 +483,7 @@ public class SmartCitizenLoginActivity extends Activity  {
 
                         .build();
 
-                if(utility.cookieManager == null)
+                if (utility.cookieManager == null)
                     utility.cookieManager = new CookieManager();
                 CookieHandler.setDefault(utility.cookieManager);
                 String body = user_reg.toString();
@@ -521,20 +520,18 @@ public class SmartCitizenLoginActivity extends Activity  {
                 }
                 userJsonStr = buffer.toString();
 
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 JSONObject json = new JSONObject();
                 try {
 
-                    json.put("success","false");
+                    json.put("success", "false");
                     json.put("message", e.getMessage());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
                 return json.toString();
-            }
-            finally {
+            } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
@@ -546,8 +543,6 @@ public class SmartCitizenLoginActivity extends Activity  {
                     }
                 }
             }
-
-           // Log.i("User ",userJsonStr);
 
             return userJsonStr;
         }
@@ -562,7 +557,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 // {"success":false,"message":"There was Error Registering Your Account."}
                 TextView error_message = (TextView) findViewById(R.id.error_message);
                 success = Boolean.valueOf(my_json.getString("success"));
-                if ( my_json.getString("success").equals("false") ) {
+                if (my_json.getString("success").equals("false")) {
 
                     error_message.setText(my_json.getString("message"));
                     error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
@@ -570,9 +565,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                     error_message.setVisibility(View.VISIBLE);
                     error_message.invalidate();
 
-                }
-                else
-                {
+                } else {
 
                     savePassword(mPassword);
                     saveUsername(mUsername);
@@ -585,6 +578,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
             }
+
 
         }
 

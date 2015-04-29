@@ -49,8 +49,7 @@
                         android:textColor="@color/accent"
                         android:layout_weight="0.2"
                         android:gravity="center_vertical"
-                        android:textSize="14sp"
-                        android:layout_gravity="center_vertical"> </TextView>
+                        android:textSize="22sp"> </TextView>
 
                     <TextView
                         android:id="@+id/welcome_email_text"
@@ -63,8 +62,7 @@
                         android:textColor="@color/red_400"
                         android:gravity="center_vertical"
                         android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:layout_gravity="center_vertical"/>
+                        android:textSize="22sp"/>
                 </LinearLayout>
                 <LinearLayout
                     android:orientation="horizontal"
@@ -90,9 +88,9 @@
                             android:layout_height="0dp"
                             android:text="@string/submit_reading"
                             android:id="@+id/txtCaptureReading"
-                            android:layout_weight="0.2"
+                            android:layout_weight="0.15"
                             android:gravity="center"
-                            android:textSize="16sp"/>
+                            android:textSize="22sp"/>
 
                     </LinearLayout>
 
@@ -114,9 +112,9 @@
                             android:layout_height="0dp"
                             android:text="@string/view_reading"
                             android:id="@+id/txtViewReading"
-                            android:layout_weight="0.2"
+                            android:layout_weight="0.15"
                             android:gravity="center"
-                            android:textSize="16sp"/>
+                            android:textSize="22sp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -136,9 +134,9 @@
                             android:layout_height="0dp"
                             android:text="@string/view_notification"
                             android:id="@+id/txtNotification"
-                            android:layout_weight="0.2"
+                            android:layout_weight="0.15"
                             android:gravity="center"
-                            android:textSize="16sp"/>
+                            android:textSize="22sp"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -158,8 +156,7 @@
                 android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:layout_weight="0.1"
-                android:layout_marginTop="5dp"
-                android:layout_gravity="center_vertical">
+                android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/property_heading"
@@ -168,9 +165,10 @@
                     android:text="@string/my_property_header"
                     android:textColor="@color/smart_citizen_blue"
                     android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"/>
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="22sp"/>
                 <!--
                <Button
                    android:layout_width="0dp"
@@ -187,10 +185,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.5"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/listview_properties"
                 android:smoothScrollbar="true"
-                android:layout_marginLeft="2dp">
+                android:layout_marginLeft="5dp">
 
 
             </ListView>

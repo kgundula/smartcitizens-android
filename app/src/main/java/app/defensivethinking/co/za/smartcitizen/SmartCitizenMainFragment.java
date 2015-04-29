@@ -225,6 +225,7 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
 
     public void ViewReading() {
         Intent intent = new Intent(getActivity(), ViewReadingActivity.class);
+        intent.putExtra("property_owner", property_owner);
         startActivity(intent);
     }
 

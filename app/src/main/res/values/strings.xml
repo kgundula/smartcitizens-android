@@ -39,6 +39,8 @@
     <string name="water_evidence">Take Picture</string>
     <string name="electricity_evidence">Take Picture</string>
 
+    <string name="no_notification">You don\'t have any notifications right now.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="new_property">Add new Property</string>

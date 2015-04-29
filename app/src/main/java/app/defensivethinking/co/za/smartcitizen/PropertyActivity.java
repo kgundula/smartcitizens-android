@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -173,7 +172,7 @@ public class PropertyActivity extends ActionBarActivity {
                         message = "Property Added Successfully";
                         JSONObject myProperty = jsonObject.getJSONObject("property");
 
-                        Toast.makeText(context, "Property Added Successfully", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(context, "Property Added Successfully", Toast.LENGTH_LONG).show();
 
                         String _id = myProperty.getString("_id");
                         String contact_tel = myProperty.getString("contacttel");
