@@ -437,21 +437,23 @@ public class CaptureReadingActivity extends ActionBarActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //progressBar.setVisibility(View.VISIBLE);
+
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
-        //Log.i()
+
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL,readings, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
+                error_message.setText("Reading Captured");
+                error_message.setVisibility(View.VISIBLE);
+
                 try {
                     Log.i("Capture", jsonObject.toString());
                     Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
 
-                    //progressBar.setVisibility(View.INVISIBLE);
                     error_message.setText("Reading Captured");
                     error_message.setVisibility(View.VISIBLE);
-                    error_message.invalidate();
+
                 } catch (Exception ex ) {
                     ex.printStackTrace();
                 }
@@ -475,7 +477,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 } else if( error instanceof TimeoutError) {
                     error_msg = error.getMessage();
                 }
-                //progressBar.setVisibility(View.INVISIBLE);
+
                 error_message.setText(error_msg);
                 error_message.setVisibility(View.VISIBLE);
                 error_message.invalidate();

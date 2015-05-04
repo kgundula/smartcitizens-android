@@ -7,21 +7,21 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -37,7 +37,7 @@ import app.defensivethinking.co.za.smartcitizen.utility.utility;
 public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
     public final String LOG_TAG = SmartCitizenSyncAdapter.class.getSimpleName();
 
-    public static final int SYNC_INTERVAL = 1;
+    public static final int SYNC_INTERVAL = 60 * 360; //
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
 
     public SmartCitizenSyncAdapter(Context context, boolean autoInitialize) {
@@ -51,7 +51,7 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
             utility.cookieManager = new CookieManager();
 
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
-        final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties/owner/";
+        final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties/owner/ownerId";
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -61,23 +61,25 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
 
             Uri builtUri = Uri.parse(SMART_CITIZEN_URL).buildUpon().build();
 
+            JSONObject body_json = new JSONObject();
+            String mEmail = getUsername();
+            try {
+                body_json.put("email", mEmail);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String body = body_json.toString();
 
             URL url = new URL(builtUri.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);
-            //urlConnection.setFixedLengthStreamingMode(body.getBytes().length);
-
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.connect();
 
-            OutputStream os = new BufferedOutputStream(urlConnection.getOutputStream());
-            //os.write(body.getBytes());
-            //clean up
-            //os.flush();
-
             InputStream inputStream = urlConnection.getInputStream();
+
+
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
                 return;
@@ -174,6 +176,12 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
             ex.printStackTrace();
         }
 
+    }
+
+    public String getUsername() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());//getApplicationContext());
+        String username = settings.getString("username", "");
+        return username;
     }
 
     @Override

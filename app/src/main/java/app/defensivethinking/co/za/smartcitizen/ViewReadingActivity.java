@@ -105,13 +105,14 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
             property_owner = user_cursor.getString(0);
             user_email  = user_cursor.getString(1);
         }
-        user_cursor.close();
 
-        getReading();
+        user_cursor.close();
 
         Uri property_uri = SmartCitizenContract.PropertyEntry.CONTENT_URI;
         String propertySelection = "(" + SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_OWNER + " = ? )";
         String[] propertySelectAgs = new String[] {property_owner};
+
+        getReading();
 
         property_cursor = getContentResolver().query(property_uri, PROPERTY_PROJECTION, propertySelection, propertySelectAgs, null);
 

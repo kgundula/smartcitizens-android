@@ -8,6 +8,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import app.defensivethinking.co.za.smartcitizen.sync.SmartCitizenSyncAdapter;
+
 
 public class SmartCitizenMainActivity extends ActionBarActivity implements SmartCitizenMainFragment.MyMainActivityInterface {
 
@@ -18,6 +20,8 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_citizen_main);
 
+        //SmartCitizenSyncAdapter.syncImmediately(this);
+
         if (savedInstanceState == null) {
             SmartCitizenMainFragment fragment = new SmartCitizenMainFragment();
             fragment.setRetainInstance(true);
@@ -26,6 +30,7 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
                     .add(R.id.fragment_main , fragment).commit();
         }
 
+        SmartCitizenSyncAdapter.initializeSyncAdapter(this);
     }
 
     public void MainActivityData (String u_email , String p_owner) {
