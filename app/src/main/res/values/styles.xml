@@ -8,7 +8,19 @@
 
     </style>
 
+    <style name="AppTheme.DarkText" parent="@style/Theme.AppCompat.Light.DarkActionBar" >
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/smart_citizen_text_color</item>
 
+
+    </style>
+
+    <style name="AppTheme.NoTitleBar" parent="@style/Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
     <!-- Style for properties listview -->
     <style name="PropertyListStyle">
 

@@ -68,15 +68,28 @@ public class SmartCitizenLoginActivity extends Activity  {
     private EditText mRegisterPasswordView;
     private EditText mRegisterPasswordConfirmView;
     static View login_form;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_citizen_login);
 
-        String username = getUsername();
-        String password = getPassword();
-        Log.i("Username", username);
-        Log.i("Passord", password);
+        //String username = getUsername();
+        //String password = getPassword();
+        String username = "";
+
+        String user  = getUser();
+        Log.i("user", user);
+        try {
+
+            JSONObject userJson = new JSONObject(user);
+            username = userJson.getString("email");
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
         if (TextUtils.isEmpty(username)) {
 
@@ -135,7 +148,6 @@ public class SmartCitizenLoginActivity extends Activity  {
                     register_form.invalidate();
                 }
             });
-
 
             mLoginFormView = findViewById(R.id.login_form);
             mLoginFormView.setVisibility(View.VISIBLE);
@@ -298,7 +310,6 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
     }
 
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showRegisterProgress(final boolean show) {
 
@@ -418,13 +429,12 @@ public class SmartCitizenLoginActivity extends Activity  {
             TextView error_message = (TextView) findViewById(R.id.error_message);
             if (success) {
 
-                savePassword(mPassword);
                 Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
                 startActivity(intent);
                 finish();
 
             } else {
-               error_message.setText(getString(R.string.error_incorrect_password));
+                error_message.setText(getString(R.string.error_incorrect_password));
                 error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
                 error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
                 error_message.setVisibility(View.VISIBLE);
@@ -554,7 +564,12 @@ public class SmartCitizenLoginActivity extends Activity  {
             showRegisterProgress(false);
             try {
                 JSONObject my_json = new JSONObject(result);
-                // {"success":false,"message":"There was Error Registering Your Account."}
+                Log.i("new user", my_json.toString());
+
+                JSONObject user = my_json.getJSONObject("user");
+                Log.i("reg user", user.toString());
+                saveUser(user);
+
                 TextView error_message = (TextView) findViewById(R.id.error_message);
                 success = Boolean.valueOf(my_json.getString("success"));
                 if (my_json.getString("success").equals("false")) {
@@ -567,8 +582,6 @@ public class SmartCitizenLoginActivity extends Activity  {
 
                 } else {
 
-                    savePassword(mPassword);
-                    saveUsername(mUsername);
                     Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
                     startActivity(intent);
                     finish();
@@ -592,6 +605,7 @@ public class SmartCitizenLoginActivity extends Activity  {
 
             JSONObject user = jsonObj.getJSONObject("user");
             JSONArray properties = jsonObj.getJSONArray("properties");
+            saveUser(user);
 
             String username = user.getString("username");
             String updated  = user.getString("updated");
@@ -599,7 +613,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             String hash     = user.getString("hash");
             String salt     = user.getString("salt");
             String _ID      = user.getString("_id");
-            saveUsername(username);
+
             Vector<ContentValues> cVVector = new Vector<ContentValues>(properties.length());
 
             ContentValues userValues = new ContentValues();
@@ -669,31 +683,20 @@ public class SmartCitizenLoginActivity extends Activity  {
 
     }
 
-    public void savePassword(String password) {
+    public void saveUser (JSONObject userJson ) {
+
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("password", password);
+        editor.putString("user", userJson.toString());
         editor.commit();
     }
 
-    public void saveUsername (String username) {
+    public String getUser() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("username", username);
-        editor.commit();
+        String user = settings.getString("user", "");
+        return user;
     }
 
-    public String getUsername() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String username = settings.getString("username", "");
-        return username;
-    }
-
-    public String getPassword() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String username = settings.getString("password", "");
-        return username;
-    }
 
 }
 

@@ -13,12 +13,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.PropertyEntry;
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.UserEntry;
@@ -75,13 +79,16 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mPropertyAdapter = new PropertyAdapter(getActivity(), null,0);
 
+        final String email_address = getUsername();
+        mPropertyAdapter = new PropertyAdapter(getActivity(), null,0);
         View rootView = inflater.inflate(R.layout.fragment_smart_citizen_main, container, false);
         TextView welcome_email_text = (TextView) rootView.findViewById(R.id.welcome_email_text);
 
-        final String email_address = getUsername();
 
+        Log.i("email", email_address);
+
+        welcome_email_text.setText(email_address);
         String userSelection = "(" + UserEntry.COLUMN_USER_EMAIL + " = ? )";
         String[] userSelectAgs = new String[] {email_address};
 
@@ -90,7 +97,6 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         if ( user_cursor != null && user_cursor.moveToFirst() ) {
             property_owner = user_cursor.getString(0);
             user_email  = user_cursor.getString(1);
-            welcome_email_text.setText(user_cursor.getString(1));
             myMainActivityInterface.MainActivityData(user_email,property_owner);
         }
 
@@ -231,7 +237,17 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
 
     public String getUsername() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        String username = settings.getString("username", "");
+        String user = settings.getString("user", "");
+        String username = "";
+        try {
+            JSONObject userObject = new JSONObject(user);
+            username = userObject.getString("username");
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         return username;
     }
 

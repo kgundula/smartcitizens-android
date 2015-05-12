@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.35"
+            android:layout_weight="0.45"
             card_view:cardCornerRadius="4dp">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,7 +49,7 @@
                         android:textColor="@color/accent"
                         android:layout_weight="0.25"
                         android:gravity="center_vertical"
-                        android:textSize="18sp"> </TextView>
+                        android:textSize="14sp"> </TextView>
 
                     <TextView
                         android:id="@+id/welcome_email_text"
@@ -62,7 +62,7 @@
                         android:textColor="@color/red_400"
                         android:gravity="center_vertical"
                         android:textStyle="bold"
-                        android:textSize="18sp"/>
+                        android:textSize="16sp"/>
                 </LinearLayout>
                 <LinearLayout
                     android:orientation="horizontal"
@@ -147,42 +147,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.65"
+            android:layout_weight="0.55"
             android:orientation="vertical"
-            >
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
 
-            <LinearLayout
+
+            <TextView
+                android:id="@+id/property_heading"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:orientation="vertical"
-                android:layout_weight="0.05"
-                android:layout_marginTop="5dp">
+                android:layout_weight="0.1"
+                android:text="@string/my_property_header"
+                android:textColor="@color/smart_citizen_blue"
+                android:gravity="center_vertical"
+                android:layout_margin="5dp"/>
 
-                <TextView
-                    android:id="@+id/property_heading"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/my_property_header"
-                    android:textColor="@color/smart_citizen_blue"
-                    android:gravity="center_vertical"
-                    android:layout_margin="5dp"/>
-                <!--
-               <Button
-                   android:layout_width="0dp"
-                   android:layout_height="match_parent"
-                   android:layout_weight="0.5"
-                   android:text="@string/new_property"
-                   android:background="@color/smart_citizen_blue"
-                   android:layout_marginRight="5dp"
-                   android:layout_marginBottom="5dp"
-                   android:textColor="@color/white"/> -->
-            </LinearLayout>
 
             <ListView
                 android:layout_width="match_parent"
                 android:elevation="4dp"
                 android:layout_height="0dp"
-                android:layout_weight="0.5"
+                android:layout_weight="0.45"
                 android:id="@+id/listview_properties"
                 >
 

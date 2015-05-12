@@ -31,7 +31,7 @@
             android:layout_weight="0.1"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/smart_citizen_text_color"
-            />
+            style="@style/AppTheme.DarkText"/>
 
         <ListView
             android:visibility="invisible"

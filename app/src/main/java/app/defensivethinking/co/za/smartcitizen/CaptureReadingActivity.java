@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -36,6 +35,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.CookieHandler;
@@ -438,21 +438,23 @@ public class CaptureReadingActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
+        Log.i("Readings", readings.toString());
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
 
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL,readings, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                error_message.setText("Reading Captured");
-                error_message.setVisibility(View.VISIBLE);
+                Log.i("Captured Readings", jsonObject.toString());
+               // error_message.setText("Reading Captured");
+               // error_message.setVisibility(View.VISIBLE);
 
                 try {
-                    Log.i("Capture", jsonObject.toString());
-                    Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
 
-                    error_message.setText("Reading Captured");
-                    error_message.setVisibility(View.VISIBLE);
+                    //Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
+
+                    //error_message.setText("Reading Captured");
+                   // error_message.setVisibility(View.VISIBLE);
 
                 } catch (Exception ex ) {
                     ex.printStackTrace();
@@ -478,9 +480,9 @@ public class CaptureReadingActivity extends ActionBarActivity {
                     error_msg = error.getMessage();
                 }
 
-                error_message.setText(error_msg);
-                error_message.setVisibility(View.VISIBLE);
-                error_message.invalidate();
+                //error_message.setText(error_msg);
+                //error_message.setVisibility(View.VISIBLE);
+                //error_message.invalidate();
             }
         });
 
@@ -489,7 +491,16 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
     public String getUsername() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String username = settings.getString("username", "");
+        String user = settings.getString("user", "");
+        String username = "";
+        try {
+            JSONObject userObject = new JSONObject(user);
+            username = userObject.getString("username");
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
         return username;
     }
 

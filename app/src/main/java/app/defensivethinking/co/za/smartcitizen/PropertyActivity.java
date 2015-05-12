@@ -166,13 +166,10 @@ public class PropertyActivity extends ActionBarActivity {
                     Boolean success = jsonObject.getBoolean("success");
                     progressBar.setVisibility(View.INVISIBLE);
                     progressBar.invalidate();
-                    // {"success":true,"property":{"__v":0,"_id":"551d2dea5672a1a445e8c58e","updated":"2015-04-02T11:54:18.331Z"}}
                     String message = "";
                     if ( success ) {
                         message = "Property Added Successfully";
                         JSONObject myProperty = jsonObject.getJSONObject("property");
-
-                        //Toast.makeText(context, "Property Added Successfully", Toast.LENGTH_LONG).show();
 
                         String _id = myProperty.getString("_id");
                         String contact_tel = myProperty.getString("contacttel");

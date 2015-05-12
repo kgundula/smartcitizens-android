@@ -21,12 +21,11 @@
     <item android:id="@+id/add_property"
           android:title="@string/property"
           android:orderInCategory="400"
-          android:icon="@mipmap/ic_action_add"
-          app:showAsAction="ifRoom"
+          app:showAsAction="never"
         />
 
     <item android:id="@+id/logout"
           android:title="@string/logout"
-          android:orderInCategory="500"
+          android:orderInCategory="600"
           app:showAsAction="never" />
 </menu>

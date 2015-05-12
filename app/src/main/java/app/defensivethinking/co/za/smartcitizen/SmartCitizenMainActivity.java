@@ -15,20 +15,17 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
 
     private final String LOG_TAG = SmartCitizenMainActivity.class.getSimpleName();
     public static String user_email , property_owner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_citizen_main);
 
-        //SmartCitizenSyncAdapter.syncImmediately(this);
-
-        if (savedInstanceState == null) {
-            SmartCitizenMainFragment fragment = new SmartCitizenMainFragment();
+        SmartCitizenMainFragment fragment = new SmartCitizenMainFragment();
             fragment.setRetainInstance(true);
 
-            getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_main , fragment).commit();
-        }
 
         SmartCitizenSyncAdapter.initializeSyncAdapter(this);
     }
@@ -62,8 +59,7 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
             Property();
         }
         else if (id == R.id.logout) {
-            deleteUsername();
-            deletePassword();
+            deleteUser();
             Intent intent = new Intent(SmartCitizenMainActivity.this, SmartCitizenLoginActivity.class);
             startActivity(intent);
             finish();
@@ -86,7 +82,6 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
         intent.putExtra("user_email", user_email);
         intent.putExtra("property_owner", property_owner);
         startActivity(intent);
-
     }
 
     public void ViewReading() {
@@ -103,18 +98,12 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
         startActivity(intent);
     }
 
-    public void deleteUsername () {
+    public void deleteUser () {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("username","");
+        editor.putString("user","");
         editor.commit();
-    }
 
-    public void deletePassword () {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("password","");
-        editor.commit();
     }
 
 }

@@ -31,6 +31,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.CookieHandler;
@@ -163,7 +164,16 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
 
     public String getUsername() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String username = settings.getString("username", "");
+        String user = settings.getString("user", "");
+        String username = "";
+        try {
+            JSONObject userObject = new JSONObject(user);
+            username = userObject.getString("username");
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
         return username;
     }
 
