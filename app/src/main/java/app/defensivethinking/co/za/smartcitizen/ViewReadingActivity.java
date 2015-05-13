@@ -84,6 +84,9 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
             SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE
     };
 
+    final List<String> accountNameList = new ArrayList<String>();
+    final List<String> accountIdList = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,8 +120,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
 
         property_cursor = getContentResolver().query(property_uri, PROPERTY_PROJECTION, propertySelection, propertySelectAgs, null);
 
-        final List<String> accountNameList = new ArrayList<String>();
-        final List<String> accountIdList = new ArrayList<String>();
+
 
         if ( property_cursor.moveToFirst()){
             do {
@@ -192,40 +194,36 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
             public void onResponse(JSONArray response) {
 
                 try {
-                    Log.i("Response",response.toString());
+
                     Vector<ContentValues> cVVector = new Vector<ContentValues>(response.length());
                     for  ( int  i = 0; i < response.length(); i++) {
 
                         JSONObject meter_reading = (JSONObject) response.get(i);
 
                         if( meter_reading.has("account") && meter_reading.has("electricity")) {
-                            //wLog.i("Readings", ""+meter_reading.toString());
+                            if ( accountNameList.contains(meter_reading.getString("account")) ) {
+                                String account_no = meter_reading.getString("account");
+                                String water_reading = meter_reading.getString("water");
+                                String electricity_reading = meter_reading.getString("electricity");
+                                String meter_id = meter_reading.getString("_id");
+                                String reading_date = meter_reading.getString("updated");
 
-                            String account_no = meter_reading.getString("account");
-                            String water_reading = meter_reading.getString("water");
-                            String electricity_reading = meter_reading.getString("electricity");
-                            String meter_id = meter_reading.getString("_id");
-                            String reading_date = meter_reading.getString("updated");
+                                ContentValues meterValues = new ContentValues();
+                                meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_ID, meter_id);
+                                meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_WATER, water_reading);
+                                meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_ELECTRICITY, electricity_reading);
+                                meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_ACCOUNT_NUMBER, account_no);
+                                meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE, reading_date);
+                                cVVector.add(meterValues);
 
-                            ContentValues meterValues = new ContentValues();
-                            meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_ID, meter_id);
-                            meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_WATER, water_reading);
-                            meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_ELECTRICITY, electricity_reading);
-                            meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_ACCOUNT_NUMBER,account_no);
-                            meterValues.put(SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE, reading_date );
-                            cVVector.add(meterValues);
-
+                            }
                         }
 
                     }
 
-
-                    Log.i("My Values",cVVector.toString());
-
                     if ( cVVector.size() > 0 ) {
                         ContentValues[] cvArray = new ContentValues[cVVector.size()];
                         cVVector.toArray(cvArray);
-
 
                         try {
                             getContentResolver().bulkInsert(SmartCitizenContract.MeterReading.CONTENT_URI, cvArray);
@@ -234,9 +232,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
                         }
                         getContentResolver().notifyChange(SmartCitizenContract.MeterReading.CONTENT_URI, null);
                     }
-                    else {
-                        Log.i("add readings", "Riley was not her");
-                    }
+
 
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -282,8 +278,6 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
         property_cursor.close();
     }
 
-
-
     public void getMeterReading(String acc_id) {
         account_id = acc_id;
         getSupportLoaderManager().restartLoader(METER_ACCOUNT_LOADER, null, this); //initLoader(METER_ACCOUNT_LOADER, null, this);
@@ -297,7 +291,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
 
         if (id != 0) {
             String meterSelection = "(" + SmartCitizenContract.MeterReading.COLUMN_METER_ACCOUNT_NUMBER + " = ? )";
-            String[] meterSelectAgs = new String[] {""+this.account_id};
+            String[] meterSelectAgs = new String[] {""+account_id};
             return new CursorLoader(
                     this,
                     meter_uri,

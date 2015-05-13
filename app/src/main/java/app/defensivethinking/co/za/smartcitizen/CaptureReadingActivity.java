@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -140,8 +141,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
         acc_date.setText(today);
         Uri properties = SmartCitizenContract.PropertyEntry.CONTENT_URI;
-
-
 
         final String email_address = getUsername();
 
@@ -295,7 +294,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 my_acc_date                 = acc_date.getText().toString().trim();
                 meter_water_reading         = acc_water_reading.getText().toString().trim();
                 meter_electricity_reading   = acc_electricity_reading.getText().toString().trim();
-               // Log.i("Meter E", meter_electricity_reading);
 
                 if (TextUtils.isEmpty(surname)) {
                     acc_surname.setError(getString(R.string.error_field_required));
@@ -438,23 +436,22 @@ public class CaptureReadingActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        Log.i("Readings", readings.toString());
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
 
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL,readings, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                Log.i("Captured Readings", jsonObject.toString());
-               // error_message.setText("Reading Captured");
-               // error_message.setVisibility(View.VISIBLE);
+
+                 error_message.setText("Reading Captured");
+                 error_message.setVisibility(View.VISIBLE);
 
                 try {
 
-                    //Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
 
-                    //error_message.setText("Reading Captured");
-                   // error_message.setVisibility(View.VISIBLE);
+                    error_message.setText("Reading Captured");
+                    error_message.setVisibility(View.VISIBLE);
 
                 } catch (Exception ex ) {
                     ex.printStackTrace();
@@ -480,9 +477,9 @@ public class CaptureReadingActivity extends ActionBarActivity {
                     error_msg = error.getMessage();
                 }
 
-                //error_message.setText(error_msg);
-                //error_message.setVisibility(View.VISIBLE);
-                //error_message.invalidate();
+                Log.e(LOG_TAG, "Volley: " + error_msg);
+                error_message.setText(error_msg);
+                error_message.setVisibility(View.VISIBLE);
             }
         });
 

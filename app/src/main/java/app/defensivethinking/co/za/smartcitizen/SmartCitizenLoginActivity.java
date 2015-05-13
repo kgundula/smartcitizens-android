@@ -74,8 +74,6 @@ public class SmartCitizenLoginActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_citizen_login);
 
-        //String username = getUsername();
-        //String password = getPassword();
         String username = "";
 
         String user  = getUser();
