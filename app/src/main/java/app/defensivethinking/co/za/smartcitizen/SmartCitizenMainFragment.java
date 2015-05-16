@@ -17,9 +17,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -155,6 +158,17 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         if (savedInstanceState != null && savedInstanceState.containsKey(PROPERTY_SELECTED_KEY)) {
             mPosition = savedInstanceState.getInt(PROPERTY_SELECTED_KEY);
         }
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = ((CursorAdapter) parent.getAdapter()).getCursor();
+                cursor.moveToPosition(position);
+                String account = cursor.getString(COL_ACCOUNT_NUMBER);
+                Log.i("Value is ", account );
+                Toast.makeText(context,"Clicked Pos"+position,Toast.LENGTH_LONG).show();
+            }
+        });
 
         user_cursor.close();
         return rootView;

@@ -30,6 +30,12 @@ public class LineGraph extends View {
         invalidate();
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        drawBackground(canvas);
+        drawLineChart(canvas);
+    }
+
     private void drawBackground(Canvas canvas) {
         float maxValue = getMax(datapoints);
         int range = getLineDistance(maxValue);
@@ -91,13 +97,10 @@ public class LineGraph extends View {
     private float getYPos(float value) {
         float height = getHeight() - getPaddingTop() - getPaddingBottom();
         float maxValue = getMax(datapoints);
-
         // scale it to the view size
         value = (value / maxValue) * height;
-
         // invert it so that higher values have lower y
         value = height - value;
-
         // offset it to adjust for padding
         value += getPaddingTop();
 
@@ -107,13 +110,10 @@ public class LineGraph extends View {
     private float getXPos(float value) {
         float width = getWidth() - getPaddingLeft() - getPaddingRight();
         float maxValue = datapoints.length - 1;
-
         // scale it to the view size
         value = (value / maxValue) * width;
-
         // offset it to adjust for padding
         value += getPaddingLeft();
-
         return value;
     }
 }

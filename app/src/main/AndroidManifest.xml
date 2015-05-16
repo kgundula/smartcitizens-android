@@ -57,26 +57,25 @@
         <activity
             android:name=".NotificationsActivity"
             android:label="@string/title_activity_notifications"
-            android:theme="@style/AppTheme"
-            android:parentActivityName=".SmartCitizenMainActivity" >
+            android:parentActivityName=".SmartCitizenMainActivity"
+            android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
         </activity>
         <activity
             android:name=".PropertyActivity"
-            android:theme="@style/AppTheme"
             android:label="@string/title_activity_property"
-            android:parentActivityName=".SmartCitizenMainActivity" >
+            android:parentActivityName=".SmartCitizenMainActivity"
+            android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
         </activity>
-
         <activity
             android:name=".AboutActivity"
-            android:theme="@style/AppTheme.NoTitleBar"
-            android:label="@string/no_title" >
+            android:label="@string/no_title"
+            android:theme="@style/AppTheme.NoTitleBar" >
         </activity>
 
         <meta-data
@@ -110,7 +109,10 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-
+        <activity
+            android:name=".PropertyDetailActivity"
+            android:label="@string/title_activity_property_detail" >
+        </activity>
     </application>
 
 </manifest>

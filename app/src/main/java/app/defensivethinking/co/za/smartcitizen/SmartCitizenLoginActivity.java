@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -67,17 +68,19 @@ public class SmartCitizenLoginActivity extends Activity  {
     private EditText mRegisterEmailView;
     private EditText mRegisterPasswordView;
     private EditText mRegisterPasswordConfirmView;
-    static View login_form;
-
+    static View login_form, register_form;
+    private static final String ACTIVE_VIEW_KEY = "active_view";
+    private boolean isRegisterView = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_citizen_login);
-
+        if (savedInstanceState !=null) {
+            isRegisterView = savedInstanceState.getBoolean(ACTIVE_VIEW_KEY);
+        }
         String username = "";
 
         String user  = getUser();
-        Log.i("user", user);
         try {
 
             JSONObject userJson = new JSONObject(user);
@@ -91,18 +94,21 @@ public class SmartCitizenLoginActivity extends Activity  {
 
         if (TextUtils.isEmpty(username)) {
 
+
             remember_me = false;
-            final View register_form = (View) findViewById(R.id.register_form);
+            register_form = (View) findViewById(R.id.register_form);
             login_form = (View) findViewById(R.id.login_form);
 
             pattern = Pattern.compile(email_reg_expr);
             // Set up the login form.
             mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
             mPasswordView = (EditText) findViewById(R.id.password);
-
+            mProgressView = findViewById(R.id.login_progress);
             mRegisterEmailView  = (EditText) findViewById(R.id.register_email);
             mRegisterPasswordView     = (EditText) findViewById(R.id.register_password);
             mRegisterPasswordConfirmView = (EditText) findViewById(R.id.register_password2);
+            mLoginFormView = findViewById(R.id.login_form);
+            mRegisterFormView = findViewById(R.id.register_form);
 
             mRegisterEmailView = (EditText) findViewById(R.id.register_email);
 
@@ -119,10 +125,12 @@ public class SmartCitizenLoginActivity extends Activity  {
                 @Override
                 public void onClick(View v) {
 
+                    isRegisterView = true;
                     login_form.setVisibility(View.GONE);
                     register_form.setVisibility(View.VISIBLE);
                     login_form.invalidate();
                     register_form.invalidate();
+
                 }
             });
 
@@ -139,7 +147,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             mLogin.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    isRegisterView = false;
                     login_form.setVisibility(View.VISIBLE);
                     register_form.setVisibility(View.GONE);
                     login_form.invalidate();
@@ -147,11 +155,23 @@ public class SmartCitizenLoginActivity extends Activity  {
                 }
             });
 
-            mLoginFormView = findViewById(R.id.login_form);
-            mLoginFormView.setVisibility(View.VISIBLE);
-            mLoginFormView.invalidate();
-            mProgressView = findViewById(R.id.login_progress);
-            mRegisterFormView = findViewById(R.id.register_form);
+
+
+            if (isRegisterView) {
+                login_form.setVisibility(View.GONE);
+                register_form.setVisibility(View.VISIBLE);
+
+            }
+            else
+            {
+                login_form.setVisibility(View.VISIBLE);
+                register_form.setVisibility(View.GONE);
+
+            }
+
+
+            register_form.invalidate();
+            login_form.invalidate();
 
         }
         else
@@ -162,6 +182,27 @@ public class SmartCitizenLoginActivity extends Activity  {
             finish();
         }
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ACTIVE_VIEW_KEY, isRegisterView);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedState) {
+        super.onRestoreInstanceState(savedState);
     }
 
     public void attemptLogin() {
@@ -201,9 +242,23 @@ public class SmartCitizenLoginActivity extends Activity  {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            TextView error_message = (TextView) findViewById(R.id.error_message);
+            if (!utility.isDeviceConnectedToInternet()) {
+                error_message.setText("Internet Connection is Required, please connnect internet");
+                error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+                error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+                error_message.setVisibility(View.VISIBLE);
+                error_message.invalidate();
+
+            }
+            else {
+                error_message.setVisibility(View.GONE);
+                error_message.invalidate();
+                showProgress(true);
+                mAuthTask = new UserLoginTask(email, password);
+                mAuthTask.execute((Void) null);
+            }
+
         }
     }
 
@@ -266,11 +321,23 @@ public class SmartCitizenLoginActivity extends Activity  {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            showRegisterProgress(true);
-            String username = email;
-            mRegisterTask = new UserRegisterTask(email, username , password);
-            mRegisterTask.execute((Void) null);
 
+            TextView error_message = (TextView) findViewById(R.id.error_message);
+            if (!utility.isDeviceConnectedToInternet()) {
+                error_message.setText("Internet Connection is Required, please connnect internet");
+                error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+                error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+                error_message.setVisibility(View.VISIBLE);
+                error_message.invalidate();
+
+            } else {
+                error_message.setVisibility(View.GONE);
+                error_message.invalidate();
+                showRegisterProgress(true);
+                String username = email;
+                mRegisterTask = new UserRegisterTask(email, username, password);
+                mRegisterTask.execute((Void) null);
+            }
         }
 
     }

@@ -366,8 +366,21 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 if (cancel) {
                     focusView.requestFocus();
                 } else {
+                    if (!utility.isDeviceConnectedToInternet()) {
+                        TextView error_message = (TextView) findViewById(R.id.error_message);
+                        error_message.setText("Internet Connection is Required, please connnect internet");
+                        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+                        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+                        error_message.setVisibility(View.VISIBLE);
+                        error_message.invalidate();
 
-                    addReading(account_name, surname, address, contact,email,bp, portion,my_acc_date,meter_water_reading,meter_electricity_reading);
+                    }
+                    else
+                    {
+                        error_message.setVisibility(View.GONE);
+                        error_message.invalidate();
+                        addReading(account_name, surname, address, contact,email,bp, portion,my_acc_date,meter_water_reading,meter_electricity_reading);
+                    }
                 }
 
             }
@@ -430,7 +443,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
             readings.put("water", water_reading);
             readings.put("electricity", electricity_reading);
             readings.put("readingDate", date);
-            readings.put("username", getUsername());
+            //readings.put("username", getUsername());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -443,9 +456,9 @@ public class CaptureReadingActivity extends ActionBarActivity {
             @Override
             public void onResponse(JSONObject jsonObject) {
 
-                 error_message.setText("Reading Captured");
-                 error_message.setVisibility(View.VISIBLE);
-
+                  error_message.setText("Reading Captured");
+                  error_message.setVisibility(View.VISIBLE);
+                  Log.i("Readings", jsonObject.toString());
                 try {
 
                     Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
@@ -478,8 +491,8 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 }
 
                 Log.e(LOG_TAG, "Volley: " + error_msg);
-                error_message.setText(error_msg);
-                error_message.setVisibility(View.VISIBLE);
+                //error_message.setText(error_msg);
+                //error_message.setVisibility(View.VISIBLE);
             }
         });
 

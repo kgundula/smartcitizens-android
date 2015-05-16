@@ -57,4 +57,5 @@ public class PropertyAdapter extends CursorAdapter {
         viewHolder.physicalAddressView.setText(physicalAddress);
     }
 
+
 }

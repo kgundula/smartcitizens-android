@@ -123,7 +123,20 @@ public class PropertyActivity extends ActionBarActivity {
                     focusView.requestFocus();
                 } else {
 
-                    addProperty(portion, bp, initials, surname, contact, address, account);
+                    TextView error_message = (TextView) findViewById(R.id.error_message);
+                    if (!utility.isDeviceConnectedToInternet()) {
+                        error_message.setText("Internet Connection is Required, please connect internet");
+                        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+                        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+                        error_message.setVisibility(View.VISIBLE);
+                        error_message.invalidate();
+
+                    }
+                    else {
+                        error_message.setVisibility(View.GONE);
+                        error_message.invalidate();
+                        addProperty(portion, bp, initials, surname, contact, address, account);
+                    }
                 }
             }
         });
