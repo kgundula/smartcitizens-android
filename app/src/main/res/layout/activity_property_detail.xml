@@ -1,7 +1,8 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/fragment"
-          android:name="app.defensivethinking.co.za.smartcitizen.PropertyDetailActivityFragment"
-          tools:layout="@layout/fragment_property_detail"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"/>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:id="@+id/view_property_container"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     tools:context="app.defensivethinking.co.za.smartcitizen.PropertyDetailActivity"
+     tools:ignore="MergeRootFrame"
+    />

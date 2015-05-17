@@ -71,6 +71,7 @@ public class SmartCitizenLoginActivity extends Activity  {
     static View login_form, register_form;
     private static final String ACTIVE_VIEW_KEY = "active_view";
     private boolean isRegisterView = false;
+    utility _utility;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,14 +79,18 @@ public class SmartCitizenLoginActivity extends Activity  {
         if (savedInstanceState !=null) {
             isRegisterView = savedInstanceState.getBoolean(ACTIVE_VIEW_KEY);
         }
+
+        _utility = new utility(getApplicationContext());
+
         String username = "";
-
         String user  = getUser();
+
         try {
-
-            JSONObject userJson = new JSONObject(user);
-            username = userJson.getString("email");
-
+            if (user != null)
+            {
+                JSONObject userJson = new JSONObject(user);
+                username = userJson.getString("email");
+            }
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -243,7 +248,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             focusView.requestFocus();
         } else {
             TextView error_message = (TextView) findViewById(R.id.error_message);
-            if (!utility.isDeviceConnectedToInternet()) {
+            if (!_utility.isDeviceConnectedToInternet()) {
                 error_message.setText("Internet Connection is Required, please connnect internet");
                 error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
                 error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
@@ -323,7 +328,7 @@ public class SmartCitizenLoginActivity extends Activity  {
         } else {
 
             TextView error_message = (TextView) findViewById(R.id.error_message);
-            if (!utility.isDeviceConnectedToInternet()) {
+            if (!_utility.isDeviceConnectedToInternet()) {
                 error_message.setText("Internet Connection is Required, please connnect internet");
                 error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
                 error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
@@ -428,9 +433,9 @@ public class SmartCitizenLoginActivity extends Activity  {
                 final String USERNAME_PARAM = "username";
                 final String PASSWORD_PARAM = "password";
 
-                if(utility.cookieManager == null)
-                    utility.cookieManager = new CookieManager();
-                CookieHandler.setDefault(utility.cookieManager);
+                if(_utility.cookieManager == null)
+                    _utility.cookieManager = new CookieManager();
+                CookieHandler.setDefault(_utility.cookieManager);
 
                 Uri builtUri = Uri.parse(SMART_CITIZEN_URL).buildUpon()
                         .appendQueryParameter(USERNAME_PARAM, mEmail)
@@ -558,9 +563,9 @@ public class SmartCitizenLoginActivity extends Activity  {
 
                         .build();
 
-                if (utility.cookieManager == null)
-                    utility.cookieManager = new CookieManager();
-                CookieHandler.setDefault(utility.cookieManager);
+                if (_utility.cookieManager == null)
+                    _utility.cookieManager = new CookieManager();
+                CookieHandler.setDefault(_utility.cookieManager);
                 String body = user_reg.toString();
 
                 URL url = new URL(builtUri.toString());

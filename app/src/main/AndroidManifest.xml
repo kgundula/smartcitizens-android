@@ -111,7 +111,12 @@
 
         <activity
             android:name=".PropertyDetailActivity"
-            android:label="@string/title_activity_property_detail" >
+            android:label="@string/title_activity_property_detail"
+            android:parentActivityName=".SmartCitizenMainActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
         </activity>
     </application>
 

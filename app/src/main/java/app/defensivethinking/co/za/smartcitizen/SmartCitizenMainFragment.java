@@ -39,7 +39,8 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
 
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
-
+    public static String mTwoPaneKey = "mTwoPane";
+    private boolean mTwoPane;
     private static final int PROPERTY_LOADER = 0;
 
     private static final String[] PROJECTION = new String[]{PropertyEntry._ID,
@@ -53,8 +54,9 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
             UserEntry.COLUMN_UPDATED
     };
 
-    private static final String PROPERTY_SELECTED_KEY = "selected_position";
+    private static String PROPERTY_SELECTED_KEY = "selected_position";
 
+    public static final int COL_PROPERTY_ID = 0;
     public static final int COL_PHYSICAL_ADDRESS = 2;
     public static final int COL_ACCOUNT_NUMBER = 3;
 
@@ -82,6 +84,10 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mTwoPane = arguments.getBoolean(SmartCitizenMainFragment.mTwoPaneKey);
+        }
 
         final String email_address = getUsername();
         mPropertyAdapter = new PropertyAdapter(getActivity(), null,0);
@@ -162,11 +168,35 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursor = ((CursorAdapter) parent.getAdapter()).getCursor();
-                cursor.moveToPosition(position);
-                String account = cursor.getString(COL_ACCOUNT_NUMBER);
-                Log.i("Value is ", account );
-                Toast.makeText(context,"Clicked Pos"+position,Toast.LENGTH_LONG).show();
+            Cursor cursor = ((CursorAdapter) parent.getAdapter()).getCursor();
+            cursor.moveToPosition(position);
+            String account = cursor.getString(COL_ACCOUNT_NUMBER);
+            String property_id = cursor.getString(COL_PROPERTY_ID);
+
+            Toast.makeText(context,"Clicked : "+account,Toast.LENGTH_LONG).show();
+            Log.i(LOG_TAG,"View TwoPane Enabled"+mTwoPane);
+            if (mTwoPane) {
+
+                Bundle arguments = new Bundle();
+                arguments.putString(PropertyDetailActivity.ACCOUNT_NO, account);
+                arguments.putString(PropertyDetailActivity.ACCOUNT_KEY,property_id);
+
+                PropertyDetailActivityFragment fragment = new PropertyDetailActivityFragment();
+                fragment.setArguments(arguments);
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.view_property_container, fragment)
+                        .commit();
+
+            } else {
+                Intent intent = new Intent(getActivity(), PropertyDetailActivity.class);
+                intent.putExtra(PropertyDetailActivity.ACCOUNT_KEY,property_id);
+                intent.putExtra(PropertyDetailActivity.ACCOUNT_NO, account);
+                startActivity(intent);
+            }
+
+
+
             }
         });
 

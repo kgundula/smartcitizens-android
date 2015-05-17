@@ -87,11 +87,13 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
     final List<String> accountNameList = new ArrayList<String>();
     final List<String> accountIdList = new ArrayList<String>();
 
+    utility _utility;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_reading);
-
+        _utility = new utility(getApplicationContext());
         mListView = (ListView) findViewById(R.id.listview_readings);
         mReadingsAdapter = new ReadingsAdapter(getApplicationContext(),null, 0);
 
@@ -181,9 +183,9 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
 
     public void getReading() {
 
-        if(utility.cookieManager == null)
-            utility.cookieManager = new CookieManager();
-        CookieHandler.setDefault(utility.cookieManager);
+        if(_utility.cookieManager == null)
+            _utility.cookieManager = new CookieManager();
+        CookieHandler.setDefault(_utility.cookieManager);
 
         RequestQueue rq = Volley.newRequestQueue(this);
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen

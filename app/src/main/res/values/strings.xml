@@ -62,7 +62,7 @@
     <string name="sync_account_type">app.defensivethinking.co.za.smartcitizen</string>
     <string name="title_activity_about">About</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_property_detail">PropertyDetailActivity</string>
+    <string name="smart_citizen_logo_text">Smart Citizen Logo</string>
+    <string name="title_activity_property_detail">Property Detail</string>
     <!--<string name="error_field_required">This field is required</string>  -->
 </resources>

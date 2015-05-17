@@ -8,25 +8,40 @@ import android.view.MenuItem;
 
 public class PropertyDetailActivity extends ActionBarActivity {
 
+
+    public static final String ACCOUNT_KEY = "account_id";
+    public static final String ACCOUNT_NO = "account_no";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_property_detail);
+
+        if (savedInstanceState == null) {
+
+            String account_id = getIntent().getStringExtra(ACCOUNT_KEY);
+            Bundle arguments = new Bundle();
+            arguments.putString( PropertyDetailActivity.ACCOUNT_KEY , account_id);
+
+            PropertyDetailActivityFragment fragment = new PropertyDetailActivityFragment();
+            fragment.setArguments(arguments);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.view_property_container, fragment)
+                    .commit();
+        }
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_property_detail, menu);
+        // getMenuInflater().inflate(R.menu.menu_property_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

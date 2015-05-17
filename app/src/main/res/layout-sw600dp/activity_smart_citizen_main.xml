@@ -12,13 +12,13 @@
               android:name="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainFragment"
               android:layout_width="0dp"
               android:layout_height="match_parent"
-              android:layout_weight="1"
+              android:layout_weight="6"
                   tools:layout="@layout/fragment_smart_citizen_main"/>
 
-        <!-- <FrameLayout
-            android:id="@+id/view_reading_container"
+        <FrameLayout
+            android:id="@+id/view_property_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5" /> -->
+            android:layout_weight="4" />
 
 </LinearLayout>

@@ -110,12 +110,14 @@ public class CaptureReadingActivity extends ActionBarActivity {
     Cursor property_cursor,user_cursor;
     static ProgressBar progressBar;
     Context context;
+    utility _utility;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture_reading);
 
         context = getApplicationContext();
+        _utility = new utility(context);
 
         water_reading_pic = (ImageView) findViewById(R.id.imgWaterProof);
         electricity_reading_pic = (ImageView) findViewById(R.id.imgElectricityProof);

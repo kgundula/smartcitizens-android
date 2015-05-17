@@ -16,13 +16,30 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
     private final String LOG_TAG = SmartCitizenMainActivity.class.getSimpleName();
     public static String user_email , property_owner;
 
+    private boolean mTwoPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_citizen_main);
 
+        if (findViewById(R.id.view_property_container) != null ) {
+
+            mTwoPane = true;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.view_property_container, new PropertyDetailActivityFragment())
+                        .commit();
+            }
+
+        } else {
+            mTwoPane = false;
+        }
+        Bundle arguments = new Bundle();
+        arguments.putBoolean(SmartCitizenMainFragment.mTwoPaneKey, mTwoPane);
         SmartCitizenMainFragment fragment = new SmartCitizenMainFragment();
-            fragment.setRetainInstance(true);
+        fragment.setArguments(arguments);
+        fragment.setRetainInstance(true);
 
         getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_main , fragment).commit();
@@ -71,7 +88,6 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
         return super.onOptionsItemSelected(item);
     }
 
-
     public void Notification() {
         Intent intent = new Intent(this, NotificationsActivity.class);
         startActivity(intent);
@@ -101,9 +117,29 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
     public void deleteUser () {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("user","");
+        editor.putString("user", "");
         editor.commit();
 
     }
+
+    //@Override
+    /*public void onItemSelected(String account_id) {
+        if (mTwoPane) {
+
+            Bundle args = new Bundle();
+            args.putString(PropertyDetailActivity.ACCOUNT_KEY, account_id);
+
+            PropertyDetailActivityFragment fragment = new PropertyDetailActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.view_property_container, fragment)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, PropertyDetailActivity.class)
+                    .putExtra(PropertyDetailActivity.ACCOUNT_KEY, account_id);
+            startActivity(intent);
+        }
+    }*/
 
 }

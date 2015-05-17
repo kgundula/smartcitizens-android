@@ -44,12 +44,14 @@ public class PropertyActivity extends ActionBarActivity {
     static TextView error_message;
     static ProgressBar progressBar;
     Context context;
+    utility _utility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_property);
         context = getApplicationContext();
+        _utility = new utility(context);
         Bundle extras = getIntent().getExtras();
         if ( extras != null) {
             email = extras.getString("user_email");

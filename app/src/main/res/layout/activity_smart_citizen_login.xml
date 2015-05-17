@@ -19,6 +19,7 @@
         android:layout_height="100dp"
         android:id="@+id/login_logo"
         android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/smart_citizen_logo_text"
         />
 
     <TextView
