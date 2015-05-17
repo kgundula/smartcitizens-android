@@ -74,6 +74,9 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         public void MainActivityData (String user_email,String property_owner);
     }
 
+    public interface Callback {
+        public void onItemSelected(String property_id);
+    }
     public void onAttach(Activity activity){
         super.onAttach(activity);
         context = getActivity();
@@ -84,10 +87,6 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mTwoPane = arguments.getBoolean(SmartCitizenMainFragment.mTwoPaneKey);
-        }
 
         final String email_address = getUsername();
         mPropertyAdapter = new PropertyAdapter(getActivity(), null,0);
@@ -168,35 +167,11 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Cursor cursor = ((CursorAdapter) parent.getAdapter()).getCursor();
-            cursor.moveToPosition(position);
-            String account = cursor.getString(COL_ACCOUNT_NUMBER);
-            String property_id = cursor.getString(COL_PROPERTY_ID);
-
-            Toast.makeText(context,"Clicked : "+account,Toast.LENGTH_LONG).show();
-            Log.i(LOG_TAG,"View TwoPane Enabled"+mTwoPane);
-            if (mTwoPane) {
-
-                Bundle arguments = new Bundle();
-                arguments.putString(PropertyDetailActivity.ACCOUNT_NO, account);
-                arguments.putString(PropertyDetailActivity.ACCOUNT_KEY,property_id);
-
-                PropertyDetailActivityFragment fragment = new PropertyDetailActivityFragment();
-                fragment.setArguments(arguments);
-
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.view_property_container, fragment)
-                        .commit();
-
-            } else {
-                Intent intent = new Intent(getActivity(), PropertyDetailActivity.class);
-                intent.putExtra(PropertyDetailActivity.ACCOUNT_KEY,property_id);
-                intent.putExtra(PropertyDetailActivity.ACCOUNT_NO, account);
-                startActivity(intent);
-            }
-
-
-
+                Cursor cursor = ((CursorAdapter) parent.getAdapter()).getCursor();
+                if (cursor != null && cursor.moveToPosition(position)) {
+                    ((Callback) getActivity())
+                            .onItemSelected(cursor.getString(COL_PROPERTY_ID));
+                }
             }
         });
 

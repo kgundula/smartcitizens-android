@@ -180,7 +180,16 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public String getUsername() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());//getApplicationContext());
-        String username = settings.getString("username", "");
+        String user = settings.getString("user", "");
+        String username = "";
+        try {
+            JSONObject userObject = new JSONObject(user);
+            username = userObject.getString("username");
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
         return username;
     }
 

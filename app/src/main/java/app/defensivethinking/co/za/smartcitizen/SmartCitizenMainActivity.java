@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import app.defensivethinking.co.za.smartcitizen.sync.SmartCitizenSyncAdapter;
 
 
-public class SmartCitizenMainActivity extends ActionBarActivity implements SmartCitizenMainFragment.MyMainActivityInterface {
+public class SmartCitizenMainActivity extends ActionBarActivity implements SmartCitizenMainFragment.MyMainActivityInterface,SmartCitizenMainFragment.Callback {
 
     private final String LOG_TAG = SmartCitizenMainActivity.class.getSimpleName();
     public static String user_email , property_owner;
@@ -122,24 +122,23 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
 
     }
 
-    //@Override
-    /*public void onItemSelected(String account_id) {
-        if (mTwoPane) {
+    public void onItemSelected(String property_id) {
+         if (mTwoPane) {
 
-            Bundle args = new Bundle();
-            args.putString(PropertyDetailActivity.ACCOUNT_KEY, account_id);
+                Bundle arguments = new Bundle();
+                arguments.putString(PropertyDetailActivity.ACCOUNT_KEY,property_id);
 
-            PropertyDetailActivityFragment fragment = new PropertyDetailActivityFragment();
-            fragment.setArguments(args);
+                PropertyDetailActivityFragment fragment = new PropertyDetailActivityFragment();
+                fragment.setArguments(arguments);
 
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.view_property_container, fragment)
-                    .commit();
-        } else {
-            Intent intent = new Intent(this, PropertyDetailActivity.class)
-                    .putExtra(PropertyDetailActivity.ACCOUNT_KEY, account_id);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.view_property_container, fragment)
+                        .commit();
+         } else {
+            Intent intent = new Intent(this, PropertyDetailActivity.class);
+            intent.putExtra(PropertyDetailActivity.ACCOUNT_KEY,property_id);
             startActivity(intent);
-        }
-    }*/
+         }
 
+    }
 }

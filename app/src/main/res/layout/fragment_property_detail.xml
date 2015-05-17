@@ -16,7 +16,7 @@
             android:id="@+id/detail_property_account"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:textColor="@color/smart_citizen_text_color"
+            android:textColor="@color/text_color"
             android:textSize="24sp" />
 
 
@@ -25,8 +25,8 @@
             android:id="@+id/detail_property_initials"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/smart_citizen_text_color"
-            android:textSize="18sp"
+            android:textColor="@color/text_color"
+            android:textSize="24sp"
             />
 
         <TextView
@@ -34,8 +34,8 @@
             android:id="@+id/detail_property_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/smart_citizen_text_color"
-            android:textSize="18sp"
+            android:textColor="@color/text_color"
+            android:textSize="24sp"
             />
 
         <TextView
@@ -43,8 +43,8 @@
             android:id="@+id/detail_property_contatct_tel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/smart_citizen_text_color"
-            android:textSize="18sp"
+            android:textColor="@color/text_color"
+            android:textSize="24sp"
             />
 
         <TextView
@@ -52,9 +52,25 @@
             android:id="@+id/detail_property_address"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:textColor="@color/smart_citizen_text_color"
-            android:textSize="18sp" />
+            android:textColor="@color/text_color"
+            android:textSize="24sp" />
 
+        <TextView
+            android:fontFamily="sans-serif-condensed"
+            android:id="@+id/detail_property_bp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:textSize="24sp" />
+
+        <TextView
+            android:fontFamily="sans-serif-condensed"
+            android:id="@+id/detail_property_portion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:textSize="24sp"
+            />
 
     </LinearLayout>
 </ScrollView>
