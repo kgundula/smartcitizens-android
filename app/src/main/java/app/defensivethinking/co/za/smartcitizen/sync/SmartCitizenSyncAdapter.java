@@ -12,7 +12,7 @@ import android.content.SyncResult;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -49,6 +50,7 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
 
         if(utility.cookieManager == null)
             utility.cookieManager = new CookieManager();
+        CookieHandler.setDefault(utility.cookieManager);
 
         final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties/owner/ownerId";
@@ -98,7 +100,7 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
             propertyJsonStr = buffer.toString();
 
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
+            Toast.makeText(getContext(), "OOPS! Something went wrong with the app, please retry.", Toast.LENGTH_LONG).show();
             return;
         }
         finally {
@@ -109,7 +111,7 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
+                    Toast.makeText(getContext(), "OOPS! Something went wrong with the app, please retry.", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -124,7 +126,6 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
                 JSONArray properties = propertyJson.getJSONArray("properties");
 
                 Vector<ContentValues> cVVector = new Vector<ContentValues>(properties.length());
-                Log.i("Sync Adapter", properties.toString());
 
                 for (int i = 0; i < properties.length(); i++ ) {
 
@@ -166,14 +167,14 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
                     try {
                         getContext().getContentResolver().bulkInsert(SmartCitizenContract.PropertyEntry.CONTENT_URI, cvArray);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Toast.makeText(getContext(), "OOPS! - "+e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                     getContext().getContentResolver().notifyChange(SmartCitizenContract.PropertyEntry.CONTENT_URI, null);
                 }
             }
 
         } catch (JSONException ex) {
-            ex.printStackTrace();
+            Toast.makeText(getContext(), "OOPS! - "+ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
     }

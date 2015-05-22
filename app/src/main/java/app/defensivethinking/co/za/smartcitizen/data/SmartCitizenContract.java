@@ -42,11 +42,6 @@ public class SmartCitizenContract {
         public static Uri buildUserUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-
-        public static String getUserByEmail  (Uri uri) {
-            return uri.getQueryParameter(COLUMN_USER_EMAIL);
-
-        }
     }
 
     public static final class PropertyEntry implements BaseColumns {
@@ -78,17 +73,6 @@ public class SmartCitizenContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildPropertyWithPropertyOwner(String propertyOwner) {
-            return CONTENT_URI.buildUpon().appendPath(propertyOwner).build();
-        }
-
-        public static String getAccountNumberFromUri(Uri uri) {
-            return uri.getQueryParameter(COLUMN_PROPERTY_ACCOUNT_NUMBER);
-        }
-
-        public static String getPropertyOwnerFromUri (Uri uri) {
-            return uri.getQueryParameter(COLUMN_PROPERTY_OWNER);
-        }
     }
 
     public static final class MeterReading implements BaseColumns {
@@ -113,9 +97,6 @@ public class SmartCitizenContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static final String getMeterReadingByAccId ( Uri uri) {
-            return uri.getQueryParameter(COLUMN_METER_ACCOUNT_NUMBER);
-        }
 
     }
 

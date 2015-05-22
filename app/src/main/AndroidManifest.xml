@@ -118,6 +118,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
         </activity>
+        <service
+            android:name=".service.SmartCitizenIntentService"
+            android:exported="false"/>
     </application>
 
 </manifest>

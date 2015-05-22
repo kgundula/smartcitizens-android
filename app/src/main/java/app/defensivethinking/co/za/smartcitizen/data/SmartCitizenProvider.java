@@ -39,36 +39,6 @@ public class SmartCitizenProvider extends ContentProvider {
                         "." + SmartCitizenContract.UserEntry.COLUMN_USER_ID);
     }
 
-    private static final String sPropertyOwnerSelection =
-            SmartCitizenContract.PropertyEntry.TABLE_NAME+"."+SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_OWNER + " = ? ";
-
-    private static final String sUserEmailSection = SmartCitizenContract.UserEntry.TABLE_NAME+"."+SmartCitizenContract.UserEntry.COLUMN_USER_EMAIL + " = ?";
-
-    private Cursor getUserByEmail (Uri uri, String[] projection, String sortOrder ) {
-
-        String user = SmartCitizenContract.UserEntry.getUserByEmail(uri);
-
-        String[] selectArgs;
-        String selection;
-
-        selectArgs = new String[]{user};
-        selection = sUserEmailSection;
-
-        return sPropertyByOwnerQueryBuilder.query(mOpenHelper.getReadableDatabase(), projection, selection, selectArgs, null, null, sortOrder);
-    }
-
-    private Cursor getPropertyByOwner ( Uri uri, String[] projection, String sortOrder ) {
-        String property = SmartCitizenContract.PropertyEntry.getPropertyOwnerFromUri(uri);
-
-        String[] selectArgs;
-        String selection;
-
-        selectArgs = new String[]{property};
-        selection = sPropertyOwnerSelection;
-
-        return sPropertyByOwnerQueryBuilder.query(mOpenHelper.getReadableDatabase(), projection, selection, selectArgs, null, null, sortOrder);
-    }
-
     private static UriMatcher buildUriMatcher() {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);

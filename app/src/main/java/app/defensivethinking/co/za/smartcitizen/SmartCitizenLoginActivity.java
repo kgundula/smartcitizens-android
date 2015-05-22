@@ -4,12 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,26 +22,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
+import app.defensivethinking.co.za.smartcitizen.service.SmartCitizenIntentService;
 import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
 
@@ -57,8 +50,7 @@ public class SmartCitizenLoginActivity extends Activity  {
     private static Boolean remember_me = false;
     private static final String email_reg_expr = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*\n"+"@[A-Za-z0-9-]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})$;";
 
-    private UserLoginTask mAuthTask = null;
-    private UserRegisterTask mRegisterTask = null;
+    private SmartCitizenIntentServiceReceiver receiver;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -76,6 +68,13 @@ public class SmartCitizenLoginActivity extends Activity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_citizen_login);
+
+        IntentFilter filter = new IntentFilter(SmartCitizenIntentServiceReceiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new SmartCitizenIntentServiceReceiver();
+        registerReceiver(receiver, filter);
+
+
         if (savedInstanceState !=null) {
             isRegisterView = savedInstanceState.getBoolean(ACTIVE_VIEW_KEY);
         }
@@ -101,8 +100,8 @@ public class SmartCitizenLoginActivity extends Activity  {
 
 
             remember_me = false;
-            register_form = (View) findViewById(R.id.register_form);
-            login_form = (View) findViewById(R.id.login_form);
+            register_form = findViewById(R.id.register_form);
+            login_form = findViewById(R.id.login_form);
 
             pattern = Pattern.compile(email_reg_expr);
             // Set up the login form.
@@ -211,9 +210,6 @@ public class SmartCitizenLoginActivity extends Activity  {
     }
 
     public void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -259,19 +255,24 @@ public class SmartCitizenLoginActivity extends Activity  {
             else {
                 error_message.setVisibility(View.GONE);
                 error_message.invalidate();
-                showProgress(true);
-                mAuthTask = new UserLoginTask(email, password);
-                mAuthTask.execute((Void) null);
+                //showProgress(true);
+
+                final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+                final String SMART_CITIZEN_URL = "http://"+base_url+"/api/login?";
+
+                Intent intent = new Intent(this, SmartCitizenIntentService.class);
+                intent.putExtra("username",email);
+                intent.putExtra("password",password);
+                intent.putExtra("url",SMART_CITIZEN_URL);
+                intent.putExtra("request_method", "login");
+                startService(intent);
+
             }
 
         }
     }
 
     public void attemptRegister() {
-
-        if (mRegisterTask != null) {
-            return;
-        }
 
         // Reset errors.
         mRegisterEmailView .setError(null);
@@ -339,9 +340,17 @@ public class SmartCitizenLoginActivity extends Activity  {
                 error_message.setVisibility(View.GONE);
                 error_message.invalidate();
                 showRegisterProgress(true);
-                String username = email;
-                mRegisterTask = new UserRegisterTask(email, username, password);
-                mRegisterTask.execute((Void) null);
+
+                final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+                final String SMART_CITIZEN_URL = "http://" + base_url + "/api/users?";
+
+                Intent intent = new Intent(this, SmartCitizenIntentService.class);
+                intent.putExtra("username",email);
+                intent.putExtra("password",password);
+                intent.putExtra("url",SMART_CITIZEN_URL);
+                intent.putExtra("request_method", "register");
+                startService(intent);
+
             }
         }
 
@@ -409,263 +418,114 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
     }
 
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
+    public class SmartCitizenIntentServiceReceiver extends BroadcastReceiver {
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
+        public static final String PROCESS_RESPONSE = "app.defensivethinking.co.za.smartcitizen.intent.action.PROCESS_RESPONSE";
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        public void onReceive(Context context, Intent intent) {
+            String responseString = intent.getStringExtra(SmartCitizenIntentService.RESPONSE_STRING);
+            int reponseStatus = intent.getIntExtra(SmartCitizenIntentService.STATUS, 0);
+            String request_method = intent.getStringExtra(SmartCitizenIntentService.REQUEST_METHOD);
 
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String userJsonStr = "";
+            Log.i("From the Service", "The :" + responseString);
 
-            try {
+            if ( reponseStatus == 1 ) {
 
-                final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
-                final String SMART_CITIZEN_URL = "http://"+base_url+"/api/login?";
-                final String USERNAME_PARAM = "username";
-                final String PASSWORD_PARAM = "password";
+                if (request_method.equals("login")) {
+                    showProgress(true);
 
-                if(_utility.cookieManager == null)
-                    _utility.cookieManager = new CookieManager();
-                CookieHandler.setDefault(_utility.cookieManager);
-
-                Uri builtUri = Uri.parse(SMART_CITIZEN_URL).buildUpon()
-                        .appendQueryParameter(USERNAME_PARAM, mEmail)
-                        .appendQueryParameter(PASSWORD_PARAM, mPassword)
-                        .build();
-
-                URL url = new URL(builtUri.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return false;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    return false;
-                }
-                userJsonStr = buffer.toString();
-            } catch (IOException e) {
-                return false;
-            } finally {
-
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
+                    TextView error_message = (TextView) findViewById(R.id.error_message);
                     try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
+                        JSONObject my_json = new JSONObject(responseString);
+
+                        if (my_json.getString("success").equals("false")) {
+
+                            error_message.setText(my_json.getString("message"));
+                            error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+                            error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+                            error_message.setVisibility(View.VISIBLE);
+                            error_message.invalidate();
+
+                        } else {
+
+                            getUserDataFromJson(responseString);
+
+                            Intent loginIntent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
+                            startActivity(loginIntent);
+                            finish();
+
+                        }
+
+
+                    } catch (JSONException e) {
+                        Toast.makeText( context , "OOPS! - "+e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
+                else if (request_method.equals("register")) {
+                    showRegisterProgress(false);
+                    try {
+                        JSONObject my_json = new JSONObject(responseString);
+                        TextView error_message = (TextView) findViewById(R.id.error_message);
+
+                        if (my_json.getString("success").equals("false")) {
+
+                            error_message.setText(my_json.getString("message"));
+                            error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+                            error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+                            error_message.setVisibility(View.VISIBLE);
+                            error_message.invalidate();
+
+                        } else {
+                            JSONObject user = my_json.getJSONObject("user");
+                            Log.i("reg user", user.toString());
+
+                            saveUser(user);
+                            String username = user.getString("username");
+                            String updated  = user.getString("updated");
+                            String email    = user.getString("email");
+                            String hash     = user.getString("hash");
+                            String salt     = user.getString("salt");
+                            String _ID      = user.getString("_id");
+
+
+                            ContentValues userValues = new ContentValues();
+
+                            userValues.put(SmartCitizenContract.UserEntry.COLUMN_USER_ID, _ID);
+                            userValues.put(SmartCitizenContract.UserEntry.COLUMN_USER_EMAIL, email);
+                            userValues.put(SmartCitizenContract.UserEntry.COLUMN_USERNAME, username);
+                            userValues.put(SmartCitizenContract.UserEntry.COLUMN_USER_HASH, hash);
+                            userValues.put(SmartCitizenContract.UserEntry.COLUMN_USER_SALT, salt);
+                            userValues.put(SmartCitizenContract.UserEntry.COLUMN_UPDATED, updated);
+
+                            try {
+                                getContentResolver().insert(SmartCitizenContract.UserEntry.CONTENT_URI, userValues);
+
+                            } catch (Exception e)
+                            {
+                                Toast.makeText( context , "OOPS! - "+e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+
+                            Intent registerIntent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
+                            startActivity(registerIntent);
+                            finish();
+                        }
+
+                    } catch (JSONException e) {
+                        Toast.makeText( context , "OOPS! - "+e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                /*
+                */
+            } else if ( reponseStatus == 0 ) {
+                Toast.makeText( context , "OOPS! Something went wrong with the app, please retry.", Toast.LENGTH_LONG).show();
+
             }
-
-            try {
-                getUserDataFromJson(userJsonStr);
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            if (!remember_me) {
-                showProgress(false);
-            }
-
-            TextView error_message = (TextView) findViewById(R.id.error_message);
-            if (success) {
-
-                Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
-                startActivity(intent);
-                finish();
-
-            } else {
-                error_message.setText(getString(R.string.error_incorrect_password));
-                error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-                error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
-                error_message.setVisibility(View.VISIBLE);
-                error_message.invalidate();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
         }
     }
 
-    public class UserRegisterTask extends AsyncTask<Void, Void, String> {
-
-        private final String mEmail;
-        private final String mPassword;
-        private final String mUsername;
-
-        UserRegisterTask(String email, String username, String password) {
-            mEmail = email;
-            mPassword = password;
-            mUsername = username;
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String userJsonStr = "";
-
-            try {
-
-                final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
-                final String SMART_CITIZEN_URL = "http://" + base_url + "/api/users?";
-                final String EMAIL_PARAM = "email";
-                final String USERNAME_PARAM = "username";
-                final String PASSWORD_PARAM = "password";
-
-                JSONObject user_reg = new JSONObject();
-
-                try {
-
-                    user_reg.put(EMAIL_PARAM, mEmail);
-                    user_reg.put(USERNAME_PARAM, mUsername);
-                    user_reg.put(PASSWORD_PARAM, mPassword);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                Uri builtUri = Uri.parse(SMART_CITIZEN_URL).buildUpon()
-
-                        .build();
-
-                if (_utility.cookieManager == null)
-                    _utility.cookieManager = new CookieManager();
-                CookieHandler.setDefault(_utility.cookieManager);
-                String body = user_reg.toString();
-
-                URL url = new URL(builtUri.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoInput(true);
-                urlConnection.setDoOutput(true);
-                urlConnection.setFixedLengthStreamingMode(body.getBytes().length);
-
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.connect();
-
-                OutputStream os = new BufferedOutputStream(urlConnection.getOutputStream());
-                os.write(body.getBytes());
-                //clean up
-                os.flush();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-                userJsonStr = buffer.toString();
-
-            } catch (IOException e) {
-                JSONObject json = new JSONObject();
-                try {
-
-                    json.put("success", "false");
-                    json.put("message", e.getMessage());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
-                return json.toString();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-
-            return userJsonStr;
-        }
-
-        @Override
-        protected void onPostExecute(final String result) {
-            mRegisterTask = null;
-            Boolean success = false;
-            showRegisterProgress(false);
-            try {
-                JSONObject my_json = new JSONObject(result);
-                Log.i("new user", my_json.toString());
-
-                JSONObject user = my_json.getJSONObject("user");
-                Log.i("reg user", user.toString());
-                saveUser(user);
-
-                TextView error_message = (TextView) findViewById(R.id.error_message);
-                success = Boolean.valueOf(my_json.getString("success"));
-                if (my_json.getString("success").equals("false")) {
-
-                    error_message.setText(my_json.getString("message"));
-                    error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-                    error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
-                    error_message.setVisibility(View.VISIBLE);
-                    error_message.invalidate();
-
-                } else {
-
-                    Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
-
-
-        }
-
-    }
 
     public void getUserDataFromJson(String userJsonStr) throws JSONException {
 
@@ -763,8 +623,7 @@ public class SmartCitizenLoginActivity extends Activity  {
 
     public String getUser() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String user = settings.getString("user", "");
-        return user;
+        return settings.getString("user", "");
     }
 
 
