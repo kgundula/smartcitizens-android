@@ -141,4 +141,5 @@ public class SmartCitizenMainActivity extends ActionBarActivity implements Smart
          }
 
     }
+
 }

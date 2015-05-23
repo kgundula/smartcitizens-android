@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
@@ -47,7 +46,6 @@ public class SmartCitizenLoginActivity extends Activity  {
     private Pattern pattern;
     private Matcher matcher;
 
-    private static Boolean remember_me = false;
     private static final String email_reg_expr = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*\n"+"@[A-Za-z0-9-]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})$;";
 
     private SmartCitizenIntentServiceReceiver receiver;
@@ -98,8 +96,6 @@ public class SmartCitizenLoginActivity extends Activity  {
 
         if (TextUtils.isEmpty(username)) {
 
-
-            remember_me = false;
             register_form = findViewById(R.id.register_form);
             login_form = findViewById(R.id.login_form);
 
@@ -129,6 +125,8 @@ public class SmartCitizenLoginActivity extends Activity  {
                 @Override
                 public void onClick(View v) {
 
+                    TextView error_message = (TextView) findViewById(R.id.error_message);
+                    error_message.setVisibility(View.INVISIBLE);
                     isRegisterView = true;
                     login_form.setVisibility(View.GONE);
                     register_form.setVisibility(View.VISIBLE);
@@ -151,6 +149,9 @@ public class SmartCitizenLoginActivity extends Activity  {
             mLogin.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    TextView error_message = (TextView) findViewById(R.id.error_message);
+                    error_message.setVisibility(View.INVISIBLE);
                     isRegisterView = false;
                     login_form.setVisibility(View.VISIBLE);
                     register_form.setVisibility(View.GONE);
@@ -180,7 +181,6 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
         else
         {
-            remember_me = true;
             Intent intent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
             startActivity(intent);
             finish();
@@ -255,7 +255,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             else {
                 error_message.setVisibility(View.GONE);
                 error_message.invalidate();
-                //showProgress(true);
+                showProgress(true);
 
                 final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
                 final String SMART_CITIZEN_URL = "http://"+base_url+"/api/login?";
@@ -418,7 +418,6 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
     }
 
-
     public class SmartCitizenIntentServiceReceiver extends BroadcastReceiver {
 
         public static final String PROCESS_RESPONSE = "app.defensivethinking.co.za.smartcitizen.intent.action.PROCESS_RESPONSE";
@@ -429,16 +428,14 @@ public class SmartCitizenLoginActivity extends Activity  {
             int reponseStatus = intent.getIntExtra(SmartCitizenIntentService.STATUS, 0);
             String request_method = intent.getStringExtra(SmartCitizenIntentService.REQUEST_METHOD);
 
-            Log.i("From the Service", "The :" + responseString);
-
             if ( reponseStatus == 1 ) {
 
                 if (request_method.equals("login")) {
-                    showProgress(true);
+                    showProgress(false);
 
-                    TextView error_message = (TextView) findViewById(R.id.error_message);
                     try {
                         JSONObject my_json = new JSONObject(responseString);
+                        TextView error_message = (TextView) findViewById(R.id.error_message);
 
                         if (my_json.getString("success").equals("false")) {
 
@@ -479,8 +476,6 @@ public class SmartCitizenLoginActivity extends Activity  {
 
                         } else {
                             JSONObject user = my_json.getJSONObject("user");
-                            Log.i("reg user", user.toString());
-
                             saveUser(user);
                             String username = user.getString("username");
                             String updated  = user.getString("updated");
@@ -517,8 +512,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                     }
                 }
 
-                /*
-                */
+
             } else if ( reponseStatus == 0 ) {
                 Toast.makeText( context , "OOPS! Something went wrong with the app, please retry.", Toast.LENGTH_LONG).show();
 
