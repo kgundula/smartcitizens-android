@@ -462,19 +462,11 @@ public class CaptureReadingActivity extends ActionBarActivity {
             @Override
             public void onResponse(JSONObject jsonObject) {
 
-                  error_message.setText("Reading Captured");
-                  error_message.setVisibility(View.VISIBLE);
-                  Log.i("Readings", jsonObject.toString());
-                try {
+                Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
 
-                    Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
+                error_message.setText("Reading Captured");
+                error_message.setVisibility(View.VISIBLE);
 
-                    error_message.setText("Reading Captured");
-                    error_message.setVisibility(View.VISIBLE);
-
-                } catch (Exception ex ) {
-                    ex.printStackTrace();
-                }
 
             }
         }, new Response.ErrorListener() {

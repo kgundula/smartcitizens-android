@@ -288,8 +288,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         Uri meter_uri = SmartCitizenContract.MeterReading.CONTENT_URI;
-        String sortOrder = SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE + " ASC";
-
+        String sortOrder = SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE + " DESC";
         if (id != 0) {
             String meterSelection = "(" + SmartCitizenContract.MeterReading.COLUMN_METER_ACCOUNT_NUMBER + " = ? )";
             String[] meterSelectAgs = new String[] {""+account_id};
@@ -299,7 +298,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
                     METER_PROJECTION,
                     meterSelection,
                     meterSelectAgs,
-                    null );
+                    sortOrder );
 
         } else {
             return new CursorLoader(

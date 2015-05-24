@@ -72,7 +72,6 @@ public class SmartCitizenLoginActivity extends Activity  {
         receiver = new SmartCitizenIntentServiceReceiver();
         registerReceiver(receiver, filter);
 
-
         if (savedInstanceState !=null) {
             isRegisterView = savedInstanceState.getBoolean(ACTIVE_VIEW_KEY);
         }
@@ -193,6 +192,17 @@ public class SmartCitizenLoginActivity extends Activity  {
         super.onPause();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        IntentFilter filter = new IntentFilter(SmartCitizenIntentServiceReceiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new SmartCitizenIntentServiceReceiver();
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         unregisterReceiver(receiver);
