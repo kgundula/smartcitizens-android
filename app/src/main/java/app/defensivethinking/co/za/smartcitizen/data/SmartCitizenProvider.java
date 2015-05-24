@@ -9,7 +9,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * Created by Profusion on 2015-03-09.
@@ -150,7 +149,6 @@ public class SmartCitizenProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         final int match = sUriMatcher.match(uri);
-        Log.i("Uri Match", ""+match);
         switch (match) {
             case USER:
                 return SmartCitizenContract.UserEntry.CONTENT_TYPE;
@@ -180,7 +178,6 @@ public class SmartCitizenProvider extends ContentProvider {
         switch (match) {
             case USER: {
                 long _id = db.insert(SmartCitizenContract.UserEntry.TABLE_NAME, null, values);
-                Log.i("User ID", String.valueOf(_id) );
                 if (_id > 0)
                     smartUri = SmartCitizenContract.UserEntry.buildUserUri(_id);
                 else
@@ -297,9 +294,7 @@ public class SmartCitizenProvider extends ContentProvider {
                 int my_count = 0;
                 try {
                     for (ContentValues value : values) {
-                        Log.i("value", value.toString());
                         long _id = db.insert(SmartCitizenContract.MeterReading.TABLE_NAME, null, value);
-                        Log.i("my id ", String.valueOf(_id) );
                         if ( _id != -1) {
                             my_count++;
                         }

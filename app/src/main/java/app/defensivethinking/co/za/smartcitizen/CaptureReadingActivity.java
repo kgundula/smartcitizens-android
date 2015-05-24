@@ -190,13 +190,13 @@ public class CaptureReadingActivity extends ActionBarActivity {
                                                int arg2, long arg3) {
                         int position = acc_name.getSelectedItemPosition();
 
-                        String  _ID = accountIdList.get(position);
+                        String _ID = accountIdList.get(position);
                         previous_electricity_reading = "0";
                         previous_water_reading = "0";
-                        if ( property_cursor.moveToFirst()) {
+                        if (property_cursor.moveToFirst()) {
                             do {
 
-                                if ( _ID.equals(property_cursor.getString(0)) ) {
+                                if (_ID.equals(property_cursor.getString(0))) {
 
                                     Uri meter_uri = SmartCitizenContract.MeterReading.CONTENT_URI;
                                     String sortOrder = SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE + " DESC";
@@ -215,21 +215,16 @@ public class CaptureReadingActivity extends ActionBarActivity {
                                         previous_water_reading = "0";
                                     }
 
-                                    if (Integer.parseInt(previous_electricity_reading) == 0)
-                                    {
+                                    if (Integer.parseInt(previous_electricity_reading) == 0) {
                                         acc_electricity_reading.setText("");
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         acc_electricity_reading.setText(previous_electricity_reading);
                                     }
 
 
-                                    if ( Integer.parseInt(previous_electricity_reading) == 0 )
-                                    {
+                                    if (Integer.parseInt(previous_electricity_reading) == 0) {
                                         acc_water_reading.setText("");
-                                    } else
-                                    {
+                                    } else {
                                         acc_water_reading.setText(previous_water_reading);
                                     }
 
@@ -255,6 +250,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
                         // TODO Auto-generated method stub
                     }
                 }
+
         );
 
 
@@ -279,23 +275,23 @@ public class CaptureReadingActivity extends ActionBarActivity {
         });
 
         Button submit_readings = (Button) findViewById(R.id.submit_readings);
-        submit_readings.setOnClickListener( new View.OnClickListener() {
+        submit_readings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 boolean cancel = false;
                 View focusView = null;
 
-                account_name                = acc_name.getSelectedItem().toString().trim();
-                surname                     = acc_surname.getText().toString().trim();
-                address                     = acc_address.getText().toString().trim();
-                contact                     = acc_contact.getText().toString().trim();
-                email                       = acc_email.getText().toString().trim();
-                bp                          = acc_bp.getText().toString().trim();
-                portion                     = acc_portion.getText().toString().trim();
-                my_acc_date                 = acc_date.getText().toString().trim();
-                meter_water_reading         = acc_water_reading.getText().toString().trim();
-                meter_electricity_reading   = acc_electricity_reading.getText().toString().trim();
+                account_name = acc_name.getSelectedItem().toString().trim();
+                surname = acc_surname.getText().toString().trim();
+                address = acc_address.getText().toString().trim();
+                contact = acc_contact.getText().toString().trim();
+                email = acc_email.getText().toString().trim();
+                bp = acc_bp.getText().toString().trim();
+                portion = acc_portion.getText().toString().trim();
+                my_acc_date = acc_date.getText().toString().trim();
+                meter_water_reading = acc_water_reading.getText().toString().trim();
+                meter_electricity_reading = acc_electricity_reading.getText().toString().trim();
 
                 if (TextUtils.isEmpty(surname)) {
                     acc_surname.setError(getString(R.string.error_field_required));
@@ -336,24 +332,23 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
                 if (TextUtils.isEmpty(meter_water_reading)) {
                     acc_water_reading.setError(getString(R.string.error_field_required));
-                    focusView =acc_water_reading;
+                    focusView = acc_water_reading;
                     cancel = true;
                 }
 
                 if (TextUtils.isEmpty(meter_electricity_reading)) {
                     acc_electricity_reading.setError(getString(R.string.error_field_required));
-                    focusView =acc_electricity_reading;
+                    focusView = acc_electricity_reading;
                     cancel = true;
                 }
 
                 if (meter_electricity_reading != null && !TextUtils.isEmpty(meter_electricity_reading)) {
-                    if ( Integer.parseInt(previous_electricity_reading) >= Integer.parseInt(meter_electricity_reading) ) {
+                    if (Integer.parseInt(previous_electricity_reading) >= Integer.parseInt(meter_electricity_reading)) {
                         acc_electricity_reading.setError(getString(R.string.error_reading_less));
                         focusView = acc_electricity_reading;
                         cancel = true;
                     }
                 }
-
 
 
                 if (meter_water_reading != null && !TextUtils.isEmpty(meter_water_reading)) {
@@ -376,25 +371,34 @@ public class CaptureReadingActivity extends ActionBarActivity {
                         error_message.setVisibility(View.VISIBLE);
                         error_message.invalidate();
 
-                    }
-                    else
-                    {
+                    } else {
                         error_message.setVisibility(View.GONE);
                         error_message.invalidate();
-                        addReading(account_name, surname, address, contact,email,bp, portion,my_acc_date,meter_water_reading,meter_electricity_reading);
+                        addReading(account_name, surname, address, contact, email, bp, portion, my_acc_date, meter_water_reading, meter_electricity_reading);
                     }
                 }
 
             }
         });
 
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     @Override
     public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
         property_cursor.close();
         user_cursor.close();
-        super.onStop();
+        super.onDestroy();
     }
 
     @Override

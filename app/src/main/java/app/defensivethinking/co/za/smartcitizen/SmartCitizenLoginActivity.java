@@ -193,6 +193,11 @@ public class SmartCitizenLoginActivity extends Activity  {
         super.onPause();
     }
 
+    public void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
+    }
+
     @Override
     public void onConfigurationChanged(Configuration configuration) {
         super.onConfigurationChanged(configuration);
@@ -437,7 +442,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                         JSONObject my_json = new JSONObject(responseString);
                         TextView error_message = (TextView) findViewById(R.id.error_message);
 
-                        if (my_json.getString("success").equals("false")) {
+                        if ( my_json.has("success") && my_json.getString("success").equals("false")) {
 
                             error_message.setText(my_json.getString("message"));
                             error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
@@ -519,7 +524,6 @@ public class SmartCitizenLoginActivity extends Activity  {
             }
         }
     }
-
 
     public void getUserDataFromJson(String userJsonStr) throws JSONException {
 

@@ -10,7 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -261,7 +260,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
                     error_msg = error.getMessage();
                 }
 
-                Log.e(LOG_TAG, "Volley: " + error_msg);
+
             }
 
         });
