@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -121,9 +120,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
         water_reading_pic = (ImageView) findViewById(R.id.imgWaterProof);
         electricity_reading_pic = (ImageView) findViewById(R.id.imgElectricityProof);
-
-        water_reading  = (EditText) findViewById(R.id.water_reading);
-        electricity_reading = (EditText) findViewById(R.id.electricity_reading);
 
         acc_water_reading = (EditText) findViewById(R.id.water_reading);
         acc_electricity_reading = (EditText) findViewById(R.id.electricity_reading);
@@ -350,7 +346,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
                     }
                 }
 
-
                 if (meter_water_reading != null && !TextUtils.isEmpty(meter_water_reading)) {
 
                     if (Integer.parseInt(previous_water_reading) >= Integer.parseInt(meter_water_reading)) {
@@ -364,16 +359,8 @@ public class CaptureReadingActivity extends ActionBarActivity {
                     focusView.requestFocus();
                 } else {
                     if (!utility.isDeviceConnectedToInternet()) {
-                        TextView error_message = (TextView) findViewById(R.id.error_message);
-                        error_message.setText("Internet Connection is Required, please connnect internet");
-                        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-                        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
-                        error_message.setVisibility(View.VISIBLE);
-                        error_message.invalidate();
-
+                        updateErrorMessage(getString(R.string.no_internet));
                     } else {
-                        error_message.setVisibility(View.GONE);
-                        error_message.invalidate();
                         addReading(account_name, surname, address, contact, email, bp, portion, my_acc_date, meter_water_reading, meter_electricity_reading);
                     }
                 }
@@ -464,9 +451,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
                 Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
 
-                error_message.setText("Reading Captured");
-                error_message.setVisibility(View.VISIBLE);
-
+                updateErrorMessage("Reading Captuered");
 
             }
         }, new Response.ErrorListener() {
@@ -488,15 +473,22 @@ public class CaptureReadingActivity extends ActionBarActivity {
                     error_msg = error.getMessage();
                 }
 
-                Log.e(LOG_TAG, "Volley: " + error_msg);
-                //error_message.setText(error_msg);
-                //error_message.setVisibility(View.VISIBLE);
+                Toast.makeText(context, error_msg, Toast.LENGTH_LONG).show();
+
             }
         });
 
         rq.add(propertyRequest);
     }
 
+    public void updateErrorMessage(String text) {
+        TextView error_message = (TextView) findViewById(R.id.error_message);
+        error_message.setText(text);
+        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+        error_message.setVisibility(View.VISIBLE);
+        error_message.invalidate();
+    }
     public String getUsername() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String user = settings.getString("user", "");

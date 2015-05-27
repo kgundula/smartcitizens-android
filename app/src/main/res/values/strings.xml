@@ -63,6 +63,7 @@
     <string name="title_activity_about">About</string>
 
     <string name="smart_citizen_logo_text">Smart Citizen Logo</string>
-    <string name="title_activity_property_detail">Property Detail</string>
+    <string name="title_activity_property_detail">Property Detail</string>f
+    <string name="no_internet">Internet Connection is Required, please connnect internet</string>
     <!--<string name="error_field_required">This field is required</string>  -->
 </resources>
