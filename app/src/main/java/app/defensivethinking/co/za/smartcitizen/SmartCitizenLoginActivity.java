@@ -92,7 +92,6 @@ public class SmartCitizenLoginActivity extends Activity  {
             e.printStackTrace();
         }
 
-
         if (TextUtils.isEmpty(username)) {
 
             register_form = findViewById(R.id.register_form);
@@ -250,7 +249,7 @@ public class SmartCitizenLoginActivity extends Activity  {
         }
 
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
+            mEmailView.setError(getResources().getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
         }
@@ -260,16 +259,10 @@ public class SmartCitizenLoginActivity extends Activity  {
         } else {
             TextView error_message = (TextView) findViewById(R.id.error_message);
             if (!_utility.isDeviceConnectedToInternet()) {
-                error_message.setText("Internet Connection is Required, please connnect internet");
-                error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-                error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
-                error_message.setVisibility(View.VISIBLE);
-                error_message.invalidate();
-
+                updateErrorMessage(getResources().getString(R.string.no_internet));
             }
             else {
-                error_message.setVisibility(View.GONE);
-                error_message.invalidate();
+                hideErrorMessage();
                 showProgress(true);
 
                 final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
@@ -343,19 +336,14 @@ public class SmartCitizenLoginActivity extends Activity  {
             focusView.requestFocus();
         } else {
 
-            TextView error_message = (TextView) findViewById(R.id.error_message);
+
             if (!_utility.isDeviceConnectedToInternet()) {
-                error_message.setText("Internet Connection is Required, please connnect internet");
-                error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-                error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
-                error_message.setVisibility(View.VISIBLE);
-                error_message.invalidate();
+
+                updateErrorMessage(getResources().getString(R.string.no_internet));
 
             } else {
-                error_message.setVisibility(View.GONE);
-                error_message.invalidate();
                 showRegisterProgress(true);
-
+                hideErrorMessage();
                 final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
                 final String SMART_CITIZEN_URL = "http://" + base_url + "/api/users?";
 
@@ -369,6 +357,21 @@ public class SmartCitizenLoginActivity extends Activity  {
             }
         }
 
+    }
+
+    public void hideErrorMessage() {
+        TextView error_message = (TextView) findViewById(R.id.error_message);
+        error_message.setVisibility(View.GONE);
+        error_message.invalidate();
+    }
+
+    public void updateErrorMessage(String text) {
+        TextView error_message = (TextView) findViewById(R.id.error_message);
+        error_message.setText(text);
+        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+        error_message.setVisibility(View.VISIBLE);
+        error_message.invalidate();
     }
 
     private boolean isPasswordValid(String password) {
@@ -450,26 +453,17 @@ public class SmartCitizenLoginActivity extends Activity  {
 
                     try {
                         JSONObject my_json = new JSONObject(responseString);
-                        TextView error_message = (TextView) findViewById(R.id.error_message);
 
                         if ( my_json.has("success") && my_json.getString("success").equals("false")) {
-
-                            error_message.setText(my_json.getString("message"));
-                            error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-                            error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
-                            error_message.setVisibility(View.VISIBLE);
-                            error_message.invalidate();
+                           updateErrorMessage(my_json.getString("message"));
 
                         } else {
 
                             getUserDataFromJson(responseString);
-
                             Intent loginIntent = new Intent(SmartCitizenLoginActivity.this, SmartCitizenMainActivity.class);
                             startActivity(loginIntent);
                             finish();
-
                         }
-
 
                     } catch (JSONException e) {
                         Toast.makeText( context , "OOPS! - "+e.getMessage(), Toast.LENGTH_LONG).show();
@@ -479,16 +473,9 @@ public class SmartCitizenLoginActivity extends Activity  {
                     showRegisterProgress(false);
                     try {
                         JSONObject my_json = new JSONObject(responseString);
-                        TextView error_message = (TextView) findViewById(R.id.error_message);
 
                         if (my_json.getString("success").equals("false")) {
-
-                            error_message.setText(my_json.getString("message"));
-                            error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-                            error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
-                            error_message.setVisibility(View.VISIBLE);
-                            error_message.invalidate();
-
+                            updateErrorMessage(my_json.getString("message"));
                         } else {
                             JSONObject user = my_json.getJSONObject("user");
                             saveUser(user);
@@ -498,7 +485,6 @@ public class SmartCitizenLoginActivity extends Activity  {
                             String hash     = user.getString("hash");
                             String salt     = user.getString("salt");
                             String _ID      = user.getString("_id");
-
 
                             ContentValues userValues = new ContentValues();
 

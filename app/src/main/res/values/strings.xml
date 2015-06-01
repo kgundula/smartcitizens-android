@@ -65,5 +65,7 @@
     <string name="smart_citizen_logo_text">Smart Citizen Logo</string>
     <string name="title_activity_property_detail">Property Detail</string>f
     <string name="no_internet">Internet Connection is Required, please connnect internet</string>
+    <string name="reading_captured">Reading Captured</string>
+    <string name="property_added">Property Added Successfully</string>
     <!--<string name="error_field_required">This field is required</string>  -->
 </resources>

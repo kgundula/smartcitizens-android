@@ -110,6 +110,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
     static ProgressBar progressBar;
     Context context;
     utility _utility;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -424,7 +425,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
             utility.cookieManager = new CookieManager();
         CookieHandler.setDefault(utility.cookieManager);
 
-
         RequestQueue rq = Volley.newRequestQueue(this);
 
         JSONObject readings = new JSONObject();
@@ -449,9 +449,8 @@ public class CaptureReadingActivity extends ActionBarActivity {
             @Override
             public void onResponse(JSONObject jsonObject) {
 
-                Toast.makeText(context, "Reading Captured", Toast.LENGTH_LONG).show();
-
-                updateErrorMessage("Reading Captuered");
+                Toast.makeText(context, getResources().getString(R.string.reading_captured), Toast.LENGTH_LONG).show();
+                updateErrorMessage(getResources().getString(R.string.reading_captured));
 
             }
         }, new Response.ErrorListener() {
@@ -489,6 +488,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
         error_message.setVisibility(View.VISIBLE);
         error_message.invalidate();
     }
+
     public String getUsername() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String user = settings.getString("user", "");

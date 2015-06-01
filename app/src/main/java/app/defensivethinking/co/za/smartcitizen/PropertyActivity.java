@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -75,13 +74,13 @@ public class PropertyActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                String portion = property_portion.getText().toString().trim();
-                String bp      = property_bp.getText().toString().trim();
+                String portion  = property_portion.getText().toString().trim();
+                String bp       = property_bp.getText().toString().trim();
                 String initials = property_initials.getText().toString().trim();
-                String surname = property_surname.getText().toString().trim();
-                String contact = property_contact.getText().toString().trim();
-                String address = property_address.getText().toString().trim();
-                String account = property_account.getText().toString().trim();
+                String surname  = property_surname.getText().toString().trim();
+                String contact  = property_contact.getText().toString().trim();
+                String address  = property_address.getText().toString().trim();
+                String account  = property_account.getText().toString().trim();
 
                 boolean cancel = false;
                 View focusView = null;
@@ -126,18 +125,11 @@ public class PropertyActivity extends ActionBarActivity {
                     focusView.requestFocus();
                 } else {
 
-                    TextView error_message = (TextView) findViewById(R.id.error_message);
                     if (!utility.isDeviceConnectedToInternet()) {
-                        error_message.setText("Internet Connection is Required, please connect internet");
-                        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-                        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
-                        error_message.setVisibility(View.VISIBLE);
-                        error_message.invalidate();
-
+                        updateErrorMessage(getResources().getString(R.string.no_internet));
                     }
                     else {
-                        error_message.setVisibility(View.GONE);
-                        error_message.invalidate();
+                        hideErrorMessage();
                         addProperty(portion, bp, initials, surname, contact, address, account);
                     }
                 }
@@ -178,27 +170,28 @@ public class PropertyActivity extends ActionBarActivity {
             public void onResponse(JSONObject jsonObject) {
 
                 try {
-                    Log.i(LOG_TAG, jsonObject.toString());
+
                     Boolean success = jsonObject.getBoolean("success");
                     progressBar.setVisibility(View.INVISIBLE);
                     progressBar.invalidate();
-                    String message = "";
-                    if ( success ) {
-                        message = "Property Added Successfully";
-                        Toast.makeText(context,message,Toast.LENGTH_LONG).show();
-                        JSONObject myProperty = jsonObject.getJSONObject("property");
 
-                        String _id = myProperty.getString("_id");
-                        String contact_tel = myProperty.getString("contacttel");
-                        String bp          = myProperty.getString("bp");
+                    if ( success ) {
+
+                        Toast.makeText(context,getResources().getString(R.string.property_added),Toast.LENGTH_LONG).show();
+                        JSONObject myProperty = jsonObject.getJSONObject("property");
+                        updateErrorMessage(getResources().getString(R.string.property_added));
+
+                        String _id              = myProperty.getString("_id");
+                        String contact_tel      = myProperty.getString("contacttel");
+                        String bp               = myProperty.getString("bp");
                         String physical_address = myProperty.getString("physicaladdress");
                         String property_updated = myProperty.getString("updated");
-                        String initials = myProperty.getString("initials");
+                        String initials         = myProperty.getString("initials");
                         String property_email   = myProperty.getString("email");
-                        String owner = myProperty.getString("owner");
-                        String surname = myProperty.getString("surname");
-                        String account_number = myProperty.getString("accountnumber");
-                        String portion = myProperty.getString("portion");
+                        String owner            = myProperty.getString("owner");
+                        String surname          = myProperty.getString("surname");
+                        String account_number   = myProperty.getString("accountnumber");
+                        String portion          = myProperty.getString("portion");
 
                         ContentValues propertyValues = new ContentValues();
                         propertyValues.put(SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_ID, _id);
@@ -223,12 +216,9 @@ public class PropertyActivity extends ActionBarActivity {
 
                     }
                     else {
-                        message = jsonObject.getString("error");
+                        updateErrorMessage(jsonObject.getString("error"));
                     }
-                    progressBar.setVisibility(View.INVISIBLE);
-                    error_message.setText(message);
-                    error_message.setVisibility(View.VISIBLE);
-                    error_message.invalidate();
+
 
                 } catch (Exception ex ) {
                     ex.printStackTrace();
@@ -263,6 +253,18 @@ public class PropertyActivity extends ActionBarActivity {
 
     }
 
-
+    public void hideErrorMessage () {
+        TextView error_message = (TextView) findViewById(R.id.error_message);
+        error_message.setVisibility(View.GONE);
+        error_message.invalidate();
+    }
+    public void updateErrorMessage(String text) {
+        TextView error_message = (TextView) findViewById(R.id.error_message);
+        error_message.setText(text);
+        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
+        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+        error_message.setVisibility(View.VISIBLE);
+        error_message.invalidate();
+    }
 
 }
