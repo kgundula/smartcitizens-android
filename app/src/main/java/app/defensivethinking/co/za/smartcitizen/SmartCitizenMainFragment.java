@@ -22,7 +22,6 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,6 +76,7 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     public interface Callback {
         public void onItemSelected(String property_id);
     }
+
     public void onAttach(Activity activity){
         super.onAttach(activity);
         context = getActivity();

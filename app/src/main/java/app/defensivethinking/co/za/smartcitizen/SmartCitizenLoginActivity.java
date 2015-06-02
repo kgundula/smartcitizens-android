@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -213,13 +214,13 @@ public class SmartCitizenLoginActivity extends Activity  {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(ACTIVE_VIEW_KEY, isRegisterView);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedState) {
         super.onRestoreInstanceState(savedState);
     }
 
@@ -258,7 +259,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             focusView.requestFocus();
         } else {
             TextView error_message = (TextView) findViewById(R.id.error_message);
-            if (!_utility.isDeviceConnectedToInternet()) {
+            if (!utility.isDeviceConnectedToInternet()) {
                 updateErrorMessage(getResources().getString(R.string.no_internet));
             }
             else {
@@ -337,10 +338,8 @@ public class SmartCitizenLoginActivity extends Activity  {
         } else {
 
 
-            if (!_utility.isDeviceConnectedToInternet()) {
-
+            if (!utility.isDeviceConnectedToInternet()) {
                 updateErrorMessage(getResources().getString(R.string.no_internet));
-
             } else {
                 showRegisterProgress(true);
                 hideErrorMessage();
@@ -538,7 +537,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             String salt     = user.getString("salt");
             String _ID      = user.getString("_id");
 
-            Vector<ContentValues> cVVector = new Vector<ContentValues>(properties.length());
+            Vector<ContentValues> cVVector = new Vector<>(properties.length());
 
             ContentValues userValues = new ContentValues();
 

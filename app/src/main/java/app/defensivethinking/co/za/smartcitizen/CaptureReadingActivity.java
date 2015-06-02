@@ -155,8 +155,8 @@ public class CaptureReadingActivity extends ActionBarActivity {
 
         property_cursor = getContentResolver().query(properties, PROPERTY_PROJECTION, propertySelection, propertySelectAgs, null);
 
-        final List<String> accountNameList = new ArrayList<String>();
-        final List<String> accountIdList = new ArrayList<String>();
+        final List<String> accountNameList = new ArrayList<>();
+        final List<String> accountIdList = new ArrayList<>();
 
         TextView no_properties = (TextView) findViewById(R.id.no_properties);
 
@@ -177,7 +177,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
         }
 
 
-        ArrayAdapter<String> adapter =new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,accountNameList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, accountNameList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         acc_name.setAdapter(adapter);
         acc_name.setOnItemSelectedListener(
@@ -465,8 +465,6 @@ public class CaptureReadingActivity extends ActionBarActivity {
                 } else if( error instanceof AuthFailureError) {
                     error_msg = error.getMessage();
                 } else if( error instanceof ParseError) {
-                    error_msg = error.getMessage();
-                } else if( error instanceof NoConnectionError) {
                     error_msg = error.getMessage();
                 } else if( error instanceof TimeoutError) {
                     error_msg = error.getMessage();

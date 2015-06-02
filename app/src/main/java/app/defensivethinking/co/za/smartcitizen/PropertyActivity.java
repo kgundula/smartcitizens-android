@@ -237,15 +237,12 @@ public class PropertyActivity extends ActionBarActivity {
                     error_msg = error.getMessage();
                 } else if( error instanceof ParseError) {
                     error_msg = error.getMessage();
-                } else if( error instanceof NoConnectionError) {
-                    error_msg = error.getMessage();
                 } else if( error instanceof TimeoutError) {
                     error_msg = error.getMessage();
                 }
 
-                error_message.setText(error_msg);
-                error_message.setVisibility(View.VISIBLE);
-                error_message.invalidate();
+                updateErrorMessage(error_msg);
+
             }
         });
 
@@ -258,6 +255,7 @@ public class PropertyActivity extends ActionBarActivity {
         error_message.setVisibility(View.GONE);
         error_message.invalidate();
     }
+
     public void updateErrorMessage(String text) {
         TextView error_message = (TextView) findViewById(R.id.error_message);
         error_message.setText(text);

@@ -39,7 +39,7 @@
     <string name="water_evidence">Take Picture</string>
     <string name="electricity_evidence">Take Picture</string>
     <string name="about">About</string>
-    <string name="no_title"></string>
+    <string name="no_title"> </string>
     <string name="app_version">App Version : </string>
     <string name="no_notification">You don\'t have any notifications right now.</string>
 

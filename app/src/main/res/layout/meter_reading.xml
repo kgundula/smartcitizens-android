@@ -12,27 +12,31 @@
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_weight="0.25"
-            android:id="@+id/account_number"/>
+            android:id="@+id/account_number"
+            android:textColor="@color/smart_citizen_text_color"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/water_reading"/>
+            android:id="@+id/water_reading"
+            android:textColor="@color/smart_citizen_text_color"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/electricity_reading"/>
+            android:id="@+id/electricity_reading"
+            android:textColor="@color/smart_citizen_text_color"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/reading_date"/>
+            android:id="@+id/reading_date"
+            android:textColor="@color/smart_citizen_text_color"/>
 
 </LinearLayout>
