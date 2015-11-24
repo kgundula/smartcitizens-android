@@ -7,9 +7,7 @@ import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.Bundle;
 
-/**
- * Created by Profusion on 2015-04-02.
- */
+
 public class SmartCitizenAuthenticator extends AbstractAccountAuthenticator {
 
 

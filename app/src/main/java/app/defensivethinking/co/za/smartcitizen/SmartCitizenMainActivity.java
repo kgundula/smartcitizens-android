@@ -4,14 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import app.defensivethinking.co.za.smartcitizen.sync.SmartCitizenSyncAdapter;
 
 
-public class SmartCitizenMainActivity extends ActionBarActivity implements SmartCitizenMainFragment.MyMainActivityInterface,SmartCitizenMainFragment.Callback {
+public class SmartCitizenMainActivity extends AppCompatActivity implements SmartCitizenMainFragment.MyMainActivityInterface,SmartCitizenMainFragment.Callback {
 
     private final String LOG_TAG = SmartCitizenMainActivity.class.getSimpleName();
     public static String user_email , property_owner;

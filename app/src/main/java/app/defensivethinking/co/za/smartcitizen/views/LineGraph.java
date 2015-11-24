@@ -6,12 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.view.View;
 
-/**
- * Created by Profusion on 2015-04-29.
- */
+
 public class LineGraph extends View {
 
     private static final int MIN_LINES = 4;
@@ -52,11 +49,11 @@ public class LineGraph extends View {
         int distance;
         int distanceIndex = 0;
         int distanceMultiplier = 1;
-        int numberOfLines = MIN_LINES;
+        int numberOfLines;
 
         do {
             distance = DISTANCES[distanceIndex] * distanceMultiplier;
-            numberOfLines = (int) FloatMath.ceil(maxValue / distance);
+            numberOfLines = (int) Math.ceil(maxValue / distance);
 
             distanceIndex++;
             if (distanceIndex == DISTANCES.length) {

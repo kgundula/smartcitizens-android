@@ -78,10 +78,6 @@
             android:theme="@style/AppTheme.NoTitleBar" >
         </activity>
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
         <provider
             android:name=".data.SmartCitizenProvider"
             android:authorities="app.defensivethinking.co.za.smartcitizen"
@@ -118,9 +114,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="app.defensivethinking.co.za.smartcitizen.SmartCitizenMainActivity" />
         </activity>
+
         <service
             android:name=".service.SmartCitizenIntentService"
-            android:exported="false"/>
+            android:exported="false" />
+
     </application>
 
 </manifest>

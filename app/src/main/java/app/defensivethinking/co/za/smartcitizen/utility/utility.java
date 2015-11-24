@@ -8,18 +8,19 @@ import java.net.CookieManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by Profusion on 2015-03-17.
- */
+
 public class utility {
 
     public static final String DATE_FORMAT = "dd-MM-yyyy";
+
     public static CookieManager cookieManager;
 
-    private static Context context;
+    public static String base_url = "smartcitizen.diraulo.me";
+
+    public static Context context;
 
     public utility(Context context) {
-        this.context = context;
+        utility.context = context;
     }
 
     public static String getDbDateString(Date date){
@@ -30,19 +31,17 @@ public class utility {
     public static boolean isDeviceConnectedToInternet() {
 
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
         if (connectivity != null)
         {
-            NetworkInfo[] networkInfo = connectivity.getAllNetworkInfo();
+            NetworkInfo networkInfo = connectivity.getActiveNetworkInfo();
             if (networkInfo != null) {
-                for (int i = 0; i < networkInfo.length; i++) {
-                    if (networkInfo[i].getState() == NetworkInfo.State.CONNECTED)
-                    {
-                        return true;
-                    }
+                if (networkInfo.getState().equals(NetworkInfo.State.CONNECTED))
+                {
+                    return true;
                 }
             }
         }
         return false;
     }
+
 }

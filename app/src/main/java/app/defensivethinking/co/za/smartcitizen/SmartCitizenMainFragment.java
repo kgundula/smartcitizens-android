@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import app.defensivethinking.co.za.smartcitizen.adapter.PropertyAdapter;
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.PropertyEntry;
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.UserEntry;
 
@@ -70,16 +70,17 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
     }
 
     public interface MyMainActivityInterface {
-        public void MainActivityData (String user_email,String property_owner);
+        void MainActivityData (String user_email,String property_owner);
     }
 
     public interface Callback {
-        public void onItemSelected(String property_id);
+         void onItemSelected(String property_id);
     }
 
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-        context = getActivity();
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        //context = (Activity) context;
         myMainActivityInterface =(MyMainActivityInterface)context;
     }
 
@@ -92,9 +93,6 @@ public class SmartCitizenMainFragment extends Fragment implements LoaderManager.
         mPropertyAdapter = new PropertyAdapter(getActivity(), null,0);
         View rootView = inflater.inflate(R.layout.fragment_smart_citizen_main, container, false);
         TextView welcome_email_text = (TextView) rootView.findViewById(R.id.welcome_email_text);
-
-
-        Log.i("email", email_address);
 
         welcome_email_text.setText(email_address);
         String userSelection = "(" + UserEntry.COLUMN_USER_EMAIL + " = ? )";

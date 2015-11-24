@@ -4,9 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-/**
- * Created by Profusion on 2015-04-02.
- */
+
 public class SmartCitizenSyncService extends Service {
 
     private static final Object sSyncAdapterLock = new Object();

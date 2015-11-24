@@ -1,4 +1,4 @@
-package app.defensivethinking.co.za.smartcitizen;
+package app.defensivethinking.co.za.smartcitizen.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-/**
- * Created by Profusion on 2015-04-08.
- */
+import app.defensivethinking.co.za.smartcitizen.R;
+
 public class ReadingsAdapter extends CursorAdapter {
 
     public static class ViewHolder {

@@ -32,9 +32,6 @@ import app.defensivethinking.co.za.smartcitizen.R;
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
 import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
-/**
- * Created by Profusion on 2015-04-02.
- */
 public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
     public final String LOG_TAG = SmartCitizenSyncAdapter.class.getSimpleName();
 
@@ -52,7 +49,7 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
             utility.cookieManager = new CookieManager();
         CookieHandler.setDefault(utility.cookieManager);
 
-        final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+        final String base_url = utility.base_url; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties/owner/ownerId";
 
         HttpURLConnection urlConnection = null;
@@ -125,7 +122,7 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 JSONArray properties = propertyJson.getJSONArray("properties");
 
-                Vector<ContentValues> cVVector = new Vector<ContentValues>(properties.length());
+                Vector<ContentValues> cVVector = new Vector<>(properties.length());
 
                 for (int i = 0; i < properties.length(); i++ ) {
 
@@ -167,14 +164,14 @@ public class SmartCitizenSyncAdapter extends AbstractThreadedSyncAdapter {
                     try {
                         getContext().getContentResolver().bulkInsert(SmartCitizenContract.PropertyEntry.CONTENT_URI, cvArray);
                     } catch (Exception e) {
-                        Toast.makeText(getContext(), "OOPS! - "+e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getContext(), "OOPS! - "+e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                     getContext().getContentResolver().notifyChange(SmartCitizenContract.PropertyEntry.CONTENT_URI, null);
                 }
             }
 
         } catch (JSONException ex) {
-            Toast.makeText(getContext(), "OOPS! - "+ex.getMessage(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(), "OOPS! - "+ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
     }

@@ -4,13 +4,10 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
- * Created by Profusion on 2015-03-05.
- */
+
 public class SmartCitizenContract {
 
     public static final String CONTENT_AUTHORITY = "app.defensivethinking.co.za.smartcitizen";
-
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_USER = "user";

@@ -3,7 +3,8 @@ package app.defensivethinking.co.za.smartcitizen;
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,6 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,7 +34,7 @@ import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
 import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
 
-public class PropertyActivity extends ActionBarActivity {
+public class PropertyActivity extends AppCompatActivity {
 
    private static final String LOG_TAG = PropertyActivity.class.getSimpleName();
 
@@ -143,7 +143,7 @@ public class PropertyActivity extends ActionBarActivity {
             utility.cookieManager = new CookieManager();
         CookieHandler.setDefault(utility.cookieManager);
 
-        RequestQueue rq = Volley.newRequestQueue(this);
+        RequestQueue rq = Volley.newRequestQueue(context);
 
         JSONObject property = new JSONObject();
         try {
@@ -161,7 +161,7 @@ public class PropertyActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+        final String base_url = utility.base_url; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/properties";
         progressBar.setVisibility(View.VISIBLE);
 
@@ -259,8 +259,8 @@ public class PropertyActivity extends ActionBarActivity {
     public void updateErrorMessage(String text) {
         TextView error_message = (TextView) findViewById(R.id.error_message);
         error_message.setText(text);
-        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+        error_message.setTextColor(ContextCompat.getColor(context, R.color.smart_citizen_text_color));
+                error_message.setBackgroundColor(ContextCompat.getColor(context, R.color.red_500));
         error_message.setVisibility(View.VISIBLE);
         error_message.invalidate();
     }

@@ -3,7 +3,6 @@ package app.defensivethinking.co.za.smartcitizen.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -22,9 +21,6 @@ import java.net.URL;
 import app.defensivethinking.co.za.smartcitizen.SmartCitizenLoginActivity;
 import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
-/**
- * Created by Profusion on 2015-05-20.
- */
 public class SmartCitizenIntentService extends IntentService {
 
     private static final String LOG_TAG = SmartCitizenIntentService.class.getSimpleName();
@@ -160,7 +156,6 @@ public class SmartCitizenIntentService extends IntentService {
             }
         }
 
-        Log.i("Service", userJsonStr);
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(SmartCitizenLoginActivity.SmartCitizenIntentServiceReceiver.PROCESS_RESPONSE);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);

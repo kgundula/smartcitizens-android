@@ -4,9 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-/**
- * Created by Profusion on 2015-03-21.
- */
+
 public class PropertyViewHolder extends RecyclerView.ViewHolder {
 
     protected TextView account_number;

@@ -1,12 +1,12 @@
 package app.defensivethinking.co.za.smartcitizen;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,15 +26,16 @@ import java.net.CookieManager;
 import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
 
-public class NotificationsActivity extends ActionBarActivity {
+public class NotificationsActivity extends AppCompatActivity {
 
 
     String owner, email;
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
-
+        context = getApplicationContext();
         Bundle extras = getIntent().getExtras();
         if ( extras != null) {
             email = extras.getString("user_email");
@@ -50,8 +51,8 @@ public class NotificationsActivity extends ActionBarActivity {
             utility.cookieManager = new CookieManager();
         CookieHandler.setDefault(utility.cookieManager);
 
-        RequestQueue rq = Volley.newRequestQueue(this);
-        final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+        RequestQueue rq = Volley.newRequestQueue(context);
+        final String base_url = utility.base_url; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/notifications/me";
         JSONObject notification = new JSONObject();
         try {
@@ -65,7 +66,7 @@ public class NotificationsActivity extends ActionBarActivity {
                 Log.i("Notifications", jsonObject.toString());
             }
         }
-        , new Response.ErrorListener() {
+                , new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 String error_msg = "";
@@ -77,14 +78,13 @@ public class NotificationsActivity extends ActionBarActivity {
                     error_msg = error.getMessage();
                 } else if( error instanceof ParseError) {
                     error_msg = error.getMessage();
-                } else if( error instanceof NoConnectionError) {
-                    error_msg = error.getMessage();
                 } else if( error instanceof TimeoutError) {
                     error_msg = error.getMessage();
                 }
-
+                Log.i("Error", error_msg);
             }
         });
+
 
         rq.add(propertyRequest);
     }

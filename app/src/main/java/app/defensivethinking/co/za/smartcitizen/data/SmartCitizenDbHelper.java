@@ -8,9 +8,7 @@ import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.UserEn
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.PropertyEntry;
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.MeterReading;
 
-/**
- * Created by Profusion on 2015-03-05.
- */
+
 public class SmartCitizenDbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;

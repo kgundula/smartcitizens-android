@@ -9,7 +9,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,7 +20,6 @@ import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -39,13 +39,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import app.defensivethinking.co.za.smartcitizen.adapter.ReadingsAdapter;
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
 import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract.UserEntry;
 import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
 
 
-public class ViewReadingActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ViewReadingActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = ViewReadingActivity.class.getSimpleName();
 
@@ -83,8 +84,8 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
             SmartCitizenContract.MeterReading.COLUMN_METER_READING_DATE
     };
 
-    final List<String> accountNameList = new ArrayList<String>();
-    final List<String> accountIdList = new ArrayList<String>();
+    final List<String> accountNameList = new ArrayList<>();
+    final List<String> accountIdList = new ArrayList<>();
 
     utility _utility;
 
@@ -109,9 +110,10 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
         if ( user_cursor != null && user_cursor.moveToFirst() ) {
             property_owner = user_cursor.getString(0);
             user_email  = user_cursor.getString(1);
+            user_cursor.close();
         }
 
-        user_cursor.close();
+
 
         Uri property_uri = SmartCitizenContract.PropertyEntry.CONTENT_URI;
         String propertySelection = "(" + SmartCitizenContract.PropertyEntry.COLUMN_PROPERTY_OWNER + " = ? )";
@@ -123,7 +125,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
 
 
 
-        if ( property_cursor.moveToFirst()){
+        if ( property_cursor!=null && property_cursor.moveToFirst()){
             do {
                 accountNameList.add(property_cursor.getString(1));
                 accountIdList.add(property_cursor.getString(0));
@@ -136,7 +138,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
             view_reading_layout.setVisibility(View.INVISIBLE);
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,accountNameList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,accountNameList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         acc_name.setAdapter(adapter);
         acc_name.setOnItemSelectedListener(
@@ -145,7 +147,6 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
                     public void onItemSelected(AdapterView<?> arg0, View arg1,
                                                int arg2, long arg3) {
                         int position = acc_name.getSelectedItemPosition();
-                        String _ID = accountIdList.get(position);
                         String account_id = accountNameList.get(position);
 
                         getMeterReading(account_id);
@@ -182,12 +183,12 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
 
     public void getReading() {
 
-        if(_utility.cookieManager == null)
-            _utility.cookieManager = new CookieManager();
-        CookieHandler.setDefault(_utility.cookieManager);
+        if(utility.cookieManager == null)
+            utility.cookieManager = new CookieManager();
+        CookieHandler.setDefault(utility.cookieManager);
 
         RequestQueue rq = Volley.newRequestQueue(this);
-        final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+        final String base_url = utility.base_url; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
 
         JsonArrayRequest propertyRequest = new JsonArrayRequest( SMART_CITIZEN_URL,  new Response.Listener<JSONArray>() {
@@ -196,7 +197,7 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
 
                 try {
 
-                    Vector<ContentValues> cVVector = new Vector<ContentValues>(response.length());
+                    Vector<ContentValues> cVVector = new Vector<>(response.length());
                     for  ( int  i = 0; i < response.length(); i++) {
 
                         JSONObject meter_reading = (JSONObject) response.get(i);
@@ -218,6 +219,8 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
                                 cVVector.add(meterValues);
 
                             }
+
+
                         }
 
                     }
@@ -254,13 +257,11 @@ public class ViewReadingActivity extends ActionBarActivity implements LoaderMana
                     error_msg = error.getMessage();
                 } else if( error instanceof ParseError) {
                     error_msg = error.getMessage();
-                } else if( error instanceof NoConnectionError) {
-                    error_msg = error.getMessage();
                 } else if( error instanceof TimeoutError) {
                     error_msg = error.getMessage();
                 }
 
-
+                Log.i("Error", error_msg);
             }
 
         });

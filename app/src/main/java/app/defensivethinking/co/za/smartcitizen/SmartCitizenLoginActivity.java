@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -63,6 +64,7 @@ public class SmartCitizenLoginActivity extends Activity  {
     private static final String ACTIVE_VIEW_KEY = "active_view";
     private boolean isRegisterView = false;
     utility _utility;
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,8 +78,8 @@ public class SmartCitizenLoginActivity extends Activity  {
         if (savedInstanceState !=null) {
             isRegisterView = savedInstanceState.getBoolean(ACTIVE_VIEW_KEY);
         }
-
-        _utility = new utility(getApplicationContext());
+        context = getApplicationContext();
+        _utility = new utility(context);
 
         String username = "";
         String user  = getUser();
@@ -173,7 +175,6 @@ public class SmartCitizenLoginActivity extends Activity  {
 
             }
 
-
             register_form.invalidate();
             login_form.invalidate();
 
@@ -205,6 +206,11 @@ public class SmartCitizenLoginActivity extends Activity  {
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         unregisterReceiver(receiver);
     }
 
@@ -266,7 +272,7 @@ public class SmartCitizenLoginActivity extends Activity  {
                 hideErrorMessage();
                 showProgress(true);
 
-                final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+                final String base_url = utility.base_url; // dev smart citizen
                 final String SMART_CITIZEN_URL = "http://"+base_url+"/api/login?";
 
                 Intent intent = new Intent(this, SmartCitizenIntentService.class);
@@ -343,7 +349,7 @@ public class SmartCitizenLoginActivity extends Activity  {
             } else {
                 showRegisterProgress(true);
                 hideErrorMessage();
-                final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+                final String base_url = utility.base_url; // dev smart citizen
                 final String SMART_CITIZEN_URL = "http://" + base_url + "/api/users?";
 
                 Intent intent = new Intent(this, SmartCitizenIntentService.class);
@@ -367,8 +373,8 @@ public class SmartCitizenLoginActivity extends Activity  {
     public void updateErrorMessage(String text) {
         TextView error_message = (TextView) findViewById(R.id.error_message);
         error_message.setText(text);
-        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+        error_message.setTextColor(ContextCompat.getColor(context ,R.color.smart_citizen_text_color));
+        error_message.setBackgroundColor(ContextCompat.getColor(context,R.color.red_500));
         error_message.setVisibility(View.VISIBLE);
         error_message.invalidate();
     }

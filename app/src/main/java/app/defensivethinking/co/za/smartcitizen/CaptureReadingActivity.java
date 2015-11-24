@@ -9,8 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,7 +26,6 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -48,7 +49,7 @@ import app.defensivethinking.co.za.smartcitizen.data.SmartCitizenContract;
 import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
 
-public class CaptureReadingActivity extends ActionBarActivity {
+public class CaptureReadingActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = CaptureReadingActivity.class.getSimpleName();
     private static  EditText water_reading, electricity_reading;
@@ -363,6 +364,7 @@ public class CaptureReadingActivity extends ActionBarActivity {
                         updateErrorMessage(getString(R.string.no_internet));
                     } else {
                         addReading(account_name, surname, address, contact, email, bp, portion, my_acc_date, meter_water_reading, meter_electricity_reading);
+
                     }
                 }
 
@@ -436,21 +438,26 @@ public class CaptureReadingActivity extends ActionBarActivity {
             readings.put("water", water_reading);
             readings.put("electricity", electricity_reading);
             readings.put("readingDate", date);
-            //readings.put("username", getUsername());
+            readings.put("username", getUsername());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        final String base_url = "smartcitizen.defensivethinking.co.za"; // dev smart citizen
+        final String base_url = utility.base_url; // dev smart citizen
         final String SMART_CITIZEN_URL = "http://"+base_url+"/api/readings";
 
         JsonObjectRequest propertyRequest = new JsonObjectRequest(Request.Method.POST, SMART_CITIZEN_URL,readings, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
 
+
+                Log.i( LOG_TAG , jsonObject.toString() );
+
                 Toast.makeText(context, getResources().getString(R.string.reading_captured), Toast.LENGTH_LONG).show();
                 updateErrorMessage(getResources().getString(R.string.reading_captured));
+                Intent mainActivity = new Intent( CaptureReadingActivity.this, SmartCitizenMainActivity.class );
+                startActivity(mainActivity);
 
             }
         }, new Response.ErrorListener() {
@@ -481,8 +488,8 @@ public class CaptureReadingActivity extends ActionBarActivity {
     public void updateErrorMessage(String text) {
         TextView error_message = (TextView) findViewById(R.id.error_message);
         error_message.setText(text);
-        error_message.setTextColor(getResources().getColor(R.color.smart_citizen_text_color));
-        error_message.setBackgroundColor(getResources().getColor(R.color.red_500));
+        error_message.setTextColor(ContextCompat.getColor(context, R.color.smart_citizen_text_color));
+        error_message.setBackgroundColor(ContextCompat.getColor(context,R.color.red_500));
         error_message.setVisibility(View.VISIBLE);
         error_message.invalidate();
     }

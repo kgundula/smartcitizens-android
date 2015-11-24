@@ -12,8 +12,6 @@
     tools:context="app.defensivethinking.co.za.smartcitizen.SmartCitizenLoginActivity"
     >
 
-    <!-- Login progress -->
-
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"

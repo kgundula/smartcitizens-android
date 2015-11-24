@@ -1,17 +1,19 @@
 package app.defensivethinking.co.za.smartcitizen;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 
-public class PropertyDetailActivity extends ActionBarActivity {
+public class PropertyDetailActivity extends AppCompatActivity {
 
     public static final String ACCOUNT_KEY = "account_id";
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_property_detail);
-
+        context = getApplicationContext();
         if (savedInstanceState == null) {
 
             String account_id = getIntent().getStringExtra(ACCOUNT_KEY);
