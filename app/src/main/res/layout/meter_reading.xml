@@ -1,42 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:weightSum="1"
-              android:layout_height="50dp"
-              android:layout_gravity="center_horizontal"
-    >
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:weightSum="1"
+    android:layout_height="50dp"
+    android:layout_gravity="center_horizontal">
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_weight="0.25"
+            android:layout_weight="0.3"
             android:id="@+id/account_number"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            tools:text="4052226655"
+            android:gravity="center|center_vertical" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.25"
+            android:layout_weight="0.2"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/water_reading"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            android:text="@string/txt_water_reading"
+            android:gravity="center|center_vertical" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.25"
+            android:layout_weight="0.2"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/electricity_reading"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            tools:text="15"
+            android:gravity="center|center_vertical" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.25"
+            android:layout_weight="0.3"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/reading_date"
-            android:textColor="@color/smart_citizen_text_color"/>
+            android:textColor="@color/smart_citizen_text_color"
+            tools:text="2015-11-09"
+            android:gravity="center|center_vertical" />
 
 </LinearLayout>

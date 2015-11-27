@@ -376,6 +376,7 @@
                         android:text="@string/water_evidence"
                         android:layout_weight="0.4"
                         android:layout_marginBottom="5dp"
+                        style="?android:textAppearanceSmall"
                         />
 
                     <ImageView
@@ -412,6 +413,7 @@
                         android:text="@string/electricity_evidence"
                         android:layout_weight="0.4"
                         android:layout_marginBottom="5dp"
+                        style="?android:textAppearanceSmall"
                         />
 
                     <ImageView
@@ -433,7 +435,7 @@
                     android:textColor="@color/white"
                     android:background="@color/light_blue_600"
                     android:layout_marginBottom="5dp"
-
+                    style="?android:textAppearanceSmall"
                     />
 
             </LinearLayout>

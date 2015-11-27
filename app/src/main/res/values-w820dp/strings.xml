@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account">Account</string>
+    <string name="electricity">Electricity</string>
+    <string name="water">Water</string>
+    <string name="date_captured">Date</string>
+</resources>

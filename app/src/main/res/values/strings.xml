@@ -67,5 +67,10 @@
     <string name="no_internet">Internet Connection is Required, please connnect internet</string>
     <string name="reading_captured">Reading Captured</string>
     <string name="property_added">Property Added Successfully</string>
+    <string name="txt_water_reading">15</string>
+    <string name="account">Account</string>
+    <string name="electricity">Electricity</string>
+    <string name="water">Water</string>
+    <string name="date_captured">Date</string>
     <!--<string name="error_field_required">This field is required</string>  -->
 </resources>

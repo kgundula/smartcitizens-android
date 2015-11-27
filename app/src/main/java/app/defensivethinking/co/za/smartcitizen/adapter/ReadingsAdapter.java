@@ -2,6 +2,7 @@ package app.defensivethinking.co.za.smartcitizen.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import app.defensivethinking.co.za.smartcitizen.R;
+import app.defensivethinking.co.za.smartcitizen.utility.utility;
 
 public class ReadingsAdapter extends CursorAdapter {
 
@@ -52,7 +54,9 @@ public class ReadingsAdapter extends CursorAdapter {
         String accountNumber = cursor.getString(1);
         String electricityReading = cursor.getString(2);
         String waterReading = cursor.getString(3);
-        String readingsDate = cursor.getString(4); // utility.getDbDateString(cursor.getString(4));
+        String readingsDate = utility.getDateFromISOFormat(cursor.getString(4));
+
+        Log.i("Date", readingsDate);
 
         viewHolder.account_numberView.setText(accountNumber);
         viewHolder.reading_dateView.setText(readingsDate);

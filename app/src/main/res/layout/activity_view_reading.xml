@@ -31,17 +31,61 @@
             android:layout_weight="0.1"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/smart_citizen_text_color"
-            style="@style/AppTheme.DarkText"/>
+            style="@style/AppTheme.DarkText" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:weightSum="1"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal">
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_weight="0.3"
+                android:textColor="@color/smart_citizen_text_color"
+                android:text="@string/account"
+                android:gravity="center|center_vertical" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/smart_citizen_text_color"
+                android:text="@string/water"
+                android:gravity="center|center_vertical" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/electricity_reading"
+                android:textColor="@color/smart_citizen_text_color"
+                android:text="@string/electricity"
+                android:gravity="center|center_vertical" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/reading_date"
+                android:textColor="@color/smart_citizen_text_color"
+                android:text="@string/date_captured"
+                android:gravity="center|center_vertical" />
+
+        </LinearLayout>
         <ListView
             android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:id="@+id/listview_readings"
             android:headerDividersEnabled="true"
-            android:layout_weight="0.9"
-
-            />
+            android:layout_weight="0.8"
+            android:elevation="4dp" />
 
     </LinearLayout>
 

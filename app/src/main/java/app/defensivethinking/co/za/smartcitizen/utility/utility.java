@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import java.net.CookieManager;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,6 +14,8 @@ import java.util.Date;
 public class utility {
 
     public static final String DATE_FORMAT = "dd-MM-yyyy";
+    public static final String DATE_FORMAT_Y = "yyyy-MM-dd";
+    public static final String ISO_DATE_FROM = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     public static CookieManager cookieManager;
 
@@ -26,6 +30,23 @@ public class utility {
     public static String getDbDateString(Date date){
         SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
         return dateFormatter.format(date);
+    }
+
+    public static String getDateFromString(Date myDate) {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT_Y);
+        return dateFormatter.format(myDate);
+    }
+
+    public static String getDateFromISOFormat(String date) {
+        DateFormat dateFormat = new SimpleDateFormat(ISO_DATE_FROM);
+        String current_date = "";
+        try {
+            Date c_date = dateFormat.parse(date);
+            current_date = getDateFromString(c_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return current_date;
     }
 
     public static boolean isDeviceConnectedToInternet() {
