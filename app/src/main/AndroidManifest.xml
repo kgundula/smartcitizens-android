@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="app.defensivethinking.co.za.smartcitizen" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,6 +22,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".SmartCitizenLoginActivity"
+            android:exported="true"
             android:label="@string/title_activity_smart_citizen_login"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateVisible" >
@@ -84,7 +84,8 @@
             android:exported="false"
             android:syncable="true" />
 
-        <service android:name=".sync.SmartCitizenAuthenticatorService" >
+        <service android:name=".sync.SmartCitizenAuthenticatorService"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
