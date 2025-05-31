@@ -2,7 +2,7 @@ package app.defensivethinking.co.za.smartcitizen;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 public class PropertyDetailActivity extends AppCompatActivity {
